@@ -1,0 +1,7 @@
+.DS_Store
+ios/build
+android/build
+gradlew
+gradlew.bat
+gradle
+node_modules
