@@ -7,6 +7,7 @@
 import React, { Component } from 'react';
 import { StackNavigator } from 'react-navigation';
 import { AppRegistry, StyleSheet, Text, View, Button } from 'react-native';
+import EventOverview from './src/containers/EventOverview';
 
 class takemeout_ios extends Component {
   static navigationOptions = {
@@ -17,36 +18,14 @@ class takemeout_ios extends Component {
     const { navigate } = this.props.navigation;
     return (
       <View style={styles.container}>
-        <Text>
-          Takemeout
-        </Text>
-        <Button title="Klikkað" onPress={() => navigate('Bar', { name: 'Nafn' }) } />
+        <EventOverview />
       </View>
     );
   }
 }
-
-class takemeout_ios2 extends Component {
-  static navigationOptions = {
-    title: 'Welcome',
-  };
-
-  render() {
-    const { name } = this.props.navigation.state.params;
-    return (
-      <View style={styles.container}>
-        <Text>
-          { name2 }
-        </Text>
-      </View>
-    );
-  }
-}
-
 
 const App = StackNavigator({
-  Home: { screen: takemeout_ios },
-  Bar: { screen: takemeout_ios2 }
+  Home: { screen: takemeout_ios }
 });
 
 const styles = StyleSheet.create({
