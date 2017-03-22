@@ -1,12 +1,13 @@
-import { Component } from 'react';
+import React, { Component } from 'react';
 import { Text, View } from 'react-native';
+import style from './style';
 
-class DateRow extends Component {
+export default class DateRow extends Component {
   render() {
     const { date } = this.props;
     return (
-      <View>
-        <Text>{date}</Text>
+      <View style={style.dateRow}>
+        <Text style={style.dateText}>{date}</Text>
       </View>
     );
   }

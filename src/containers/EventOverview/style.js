@@ -1,20 +1,46 @@
-import const { Stylesheet } from 'react-native' ;
+import { StyleSheet } from 'react-native' ;
 
-export default Stylesheet.create({
+export default StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF',
+    backgroundColor: '#FFFFFF'
   },
-  header: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
+  separator: {
+    flex: 1,
+    height: StyleSheet.hairlineWidth,
+    backgroundColor: '#BEBEBE',
   },
-  instructions: {
+  eventNameText: {
+    fontSize: 16,
+    color: '#0099CC'
+  },
+  eventRow: {
+    flex: 1,
+    paddingTop: 5,
+    paddingLeft: 20,
+    paddingBottom: 5,
+    paddingRight: 20,
+    backgroundColor: '#FFFFFF',
+  },
+  locationText: {
+    fontSize: 12,
+    color: '#0099CC'
+  },
+  typeText: {
+    fontSize: 12,
+    color: '#FF8800'
+  },
+  dateText: {
     textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
-  }
+    fontSize: 16,
+    color: '#FFFFFF'
+  },
+  dateRow: {
+    flex: 1,
+    paddingTop: 5,
+    paddingLeft: 20,
+    paddingBottom: 5,
+    paddingRight: 20,
+    backgroundColor: '#FFBB33'
+  },
 });
