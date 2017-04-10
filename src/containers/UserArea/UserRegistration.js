@@ -42,7 +42,7 @@ export default class UserRegistration extends Component {
         <View style={style.buttonBackground}>
           <Button
             color='#FFFFFF'
-            title='Skoða Viðburði'
+            title='Skrá notanda'
             onPress={() => navigate('UserAuthentication')}
           />
         </View>
