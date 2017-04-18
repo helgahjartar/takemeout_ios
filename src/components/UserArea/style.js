@@ -47,7 +47,7 @@ export default StyleSheet.create({
     //backgroundColor: '#FFFFFF',
   },
   buttonBackground: {
-    flex: 0.2,
+    flex: 0.1,
     marginTop: 5,
     marginLeft: 90,
     marginBottom: 5,
@@ -60,6 +60,12 @@ export default StyleSheet.create({
     marginLeft: 90,
     marginBottom: 270,
     marginRight: 90,
-    backgroundColor: '#FFBB33'
+    flexDirection: 'column'
+  },
+  button: {
+    backgroundColor: '#FFBB33',
+    justifyContent: 'space-around',
+    flexDirection: 'row',
+    marginTop: 10
   }
 });

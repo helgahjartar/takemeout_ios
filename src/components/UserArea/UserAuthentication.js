@@ -22,6 +22,7 @@ class UserAuthentication extends Component {
   render() {
     const { userName, passwordHash} = this.state;
     const { logOutUser, isAuthenticated, hasBeenSent } = this.props;
+    const { navigate } = this.props.navigation;
 
     return (
         <View style={style.container}>
@@ -46,12 +47,21 @@ class UserAuthentication extends Component {
           />
         </View>
         <View style={style.buttonAuthBackground}>
-          <Button
-            color='#FFFFFF'
-            title='Innskrá'
-            onPress={this.handleSubmit}
-            //onPress={() => navigate('')}
-          />
+          <View style={style.button}>
+              <Button
+                color='#FFFFFF'
+                title='Innskrá'
+                onPress={this.handleSubmit}
+              />
+            </View>
+            <View style={style.button}>
+              <Button
+                color='#FFFFFF'
+                title='Skrá nýjan notanda'
+                onPress={this.handleSubmit}
+                onPress={() => navigate('UserRegistration')}
+              />
+            </View>
         </View>
 
         {!isAuthenticated && hasBeenSent &&

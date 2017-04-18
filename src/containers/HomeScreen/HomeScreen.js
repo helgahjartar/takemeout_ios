@@ -28,7 +28,7 @@ export default class HomeScreen extends Component {
               <Button
                 color='#FFFFFF'
                 title='Mitt Svæði'
-                onPress={() => navigate('UserRegistration')}
+                onPress={() => navigate('UserAuthentication')}
               />
             </View>
           </View>
