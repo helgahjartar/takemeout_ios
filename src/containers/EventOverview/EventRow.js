@@ -1,18 +1,15 @@
-import { Component } from 'react';
+import React, { Component } from 'react';
 import { Text, View } from 'react-native';
+import style from './style'
 
-class EventRow extends Component {
+export default class EventRow extends Component {
   render() {
     const { event } = this.props;
-    const eventDict = mockEventList();
     return (
-      <View style={styles.container}>
-        {Object.keys(eventDict).map( (date, i) => {
-            <View>
-              <Text>{}</Text>
-            </View>
-        )}
-        <Button title="Klikkað" onPress={() => navigate('Bar', { name: 'Nafn' }) } />
+      <View style={style.eventRow}>
+        <Text style={style.eventNameText}>{event.name}</Text>
+        <Text style={style.locationText}>{event.location}</Text>
+        <Text style={style.typeText}>{event.type}</Text>
       </View>
     );
   }

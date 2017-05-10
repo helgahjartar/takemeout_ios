@@ -1,72 +1,64 @@
-//export default './Container';
-
 import React, { Component } from 'react';
 import { StackNavigator } from 'react-navigation';
-import { AppRegistry, Text, View, Button } from 'react-native';
+import { Text, ListView, View } from 'react-native';
+import EventRow from './EventRow';
+import DateRow from './DateRow';
+import style from './style'
+import { connect } from 'react-redux'
+import { fetchEvents } from '../../actions/index'
 
-export default class EventOverview extends Component {
+
+
+class EventOverview extends Component {
+  constructor(props) {
+    super(props);
+
+    const getSectionData = (dataBlob, sectionId) => dataBlob[sectionId];
+    const getRowData = (dataBlob, sectionId, rowId) => dataBlob[sectionId + ':' + rowId];
+
+    const ds = new ListView.DataSource({
+      rowHasChanged : (r1, r2) => r1 !== r2,
+      sectionHeaderHasChanged : (s1, s2) => s1 !== s2,
+      getSectionData,
+      getRowData
+    });
+    const { fetchEvents } = this.props;
+    fetchEvents();
+    this.state = {
+      ds : ds
+    };
+  }
+
   render() {
-    const eventDict = mockEventList();
+    const { events } = this.props;
+    const { ds } = this.state;
+    dataSource = ds.cloneWithRowsAndSections(events.dataBlob, events.sectionIds, events.rowIds)
     return (
-      <View>
-        {Object.keys(eventDict).map((date,i) =>
-            <View key={i}>
-              <Text>{date}</Text>
-            </View>
-            {eventDict[date].map((event,j) =>
-              <View key={j}>
-                <Text>{event.name}</Text>
-              </View>
-            )}
-        )}
-      </View>
+      <ListView
+        style={style.container}
+        dataSource={dataSource}
+        renderRow={(event) => <EventRow event={event} />}
+        renderSectionHeader={(date) => <DateRow date={date} />}
+        renderSeparator={(sectionId, rowId) => <View key={rowId} style={style.separator} />}
+      />
     );
   }
 }
 
-function mockEventList() {
-  const events = [
-    {
-      name: 'Prins Póló off-venue',
-      location: 'Prikið',
-      date: '2017-09-03',
-      type: 'Tónleikar'
-    },
-    {
-      name: 'Moses Hightower og Babies á Húrra',
-      location: 'Húrra',
-      date: '2017-09-03',
-      type: 'Tónleikar'
-    },
-    {
-      name: 'McGauti og Sturla Atlas',
-      location: 'Prikið',
-      date: '2017-09-08',
-      type: 'Tónleikar'
-    },
-    {
-      name: 'Boogie Trouble lokatónleikar',
-      location: 'Loft Hostel',
-      date: '2017-09-08',
-      type: 'Tónleikar'
-    },
-    {
-      name: 'Útgáfutónleikar Oyama',
-      location: 'Kex',
-      date: '2017-09-08',
-      type: 'Tónleikar'
-    },
-    {
-      name: 'Forsýning á nýju myndbandi Berndsen',
-      location: 'Kex',
-      date: '2017-10-11',
-      type: 'Tónleikar'
-    }
-  ]
-  const eventDict = {};
-  events.map(event => {
-      if (!eventDict[event.date]) eventDict[event.date] = [];
-      eventDict[event.date].push(Object.assign({}, event));
-  });
-  return eventDict;
+function mapStateToProps(state) {
+  const { events } = state.registration
+  return {
+    events : events
+  }
 }
+
+function mapDispatchToProps(dispatch) {
+  return {
+    fetchEvents: () => dispatch(fetchEvents())
+  }
+}
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(EventOverview)
