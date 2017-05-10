@@ -1,13 +1,15 @@
-//export default './Container';
-
 import React, { Component } from 'react';
 import { StackNavigator } from 'react-navigation';
 import { Text, ListView, View } from 'react-native';
 import EventRow from './EventRow';
 import DateRow from './DateRow';
 import style from './style'
+import { connect } from 'react-redux'
+import { fetchEvents } from '../../actions/index'
 
-export default class EventOverview extends Component {
+
+
+class EventOverview extends Component {
   constructor(props) {
     super(props);
 
@@ -20,19 +22,21 @@ export default class EventOverview extends Component {
       getSectionData,
       getRowData
     });
-
-    const { dataBlob, sectionIds, rowIds } = formatData(mockEventList());
+    const { fetchEvents } = this.props;
+    fetchEvents();
     this.state = {
-      dataSource : ds.cloneWithRowsAndSections(dataBlob, sectionIds, rowIds)
+      ds : ds
     };
   }
 
   render() {
-    var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+    const { events } = this.props;
+    const { ds } = this.state;
+    dataSource = ds.cloneWithRowsAndSections(events.dataBlob, events.sectionIds, events.rowIds)
     return (
       <ListView
         style={style.container}
-        dataSource={this.state.dataSource}
+        dataSource={dataSource}
         renderRow={(event) => <EventRow event={event} />}
         renderSectionHeader={(date) => <DateRow date={date} />}
         renderSeparator={(sectionId, rowId) => <View key={rowId} style={style.separator} />}
@@ -41,73 +45,20 @@ export default class EventOverview extends Component {
   }
 }
 
-function formatData(events) {
-  // make a date => [ ...event ] dictionary
-  const eventDict = {};
-  events.map(event => {
-      if (!eventDict[event.date]) eventDict[event.date] = [];
-      eventDict[event.date].push(event);
-  });
-
-  const dataBlob = {};
-  const sectionIds = Object.keys(eventDict).sort();
-  const rowIds = [];
-
-  sectionIds.map((date, index) => {
-    dataBlob[date] = date;
-    rowIds[index] = eventDict[date].map(event => {
-      dataBlob[date + ':' + event.id] = event;
-      return event.id;
-    });
-  });
-
-  return { dataBlob, sectionIds, rowIds };
+function mapStateToProps(state) {
+  const { events } = state.registration
+  return {
+    events : events
+  }
 }
 
-function mockEventList() {
-  const events = [
-    {
-      id: 6,
-      name: 'Forsýning á nýju myndbandi Berndsen',
-      location: 'Kex',
-      date: '2017-10-11',
-      type: 'Tónleikar'
-    },
-    {
-      id: 3,
-      name: 'Emmsjé Gauti og Sturla Atlas',
-      location: 'Prikið',
-      date: '2017-09-08',
-      type: 'Tónleikar'
-    },
-    {
-      id: 1,
-      name: 'Prins Póló off-venue',
-      location: 'Prikið',
-      date: '2017-09-03',
-      type: 'Tónleikar'
-    },
-    {
-      id: 4,
-      name: 'Boogie Trouble lokatónleikar',
-      location: 'Loft Hostel',
-      date: '2017-09-08',
-      type: 'Tónleikar'
-    },
-    {
-      id: 5,
-      name: 'Útgáfutónleikar Oyama',
-      location: 'Kex',
-      date: '2017-09-08',
-      type: 'Tónleikar'
-    },
-    {
-      id: 2,
-      name: 'Moses Hightower og Babies á Húrra',
-      location: 'Húrra',
-      date: '2017-09-03',
-      type: 'Tónleikar'
-    }
-  ]
-  return events;
+function mapDispatchToProps(dispatch) {
+  return {
+    fetchEvents: () => dispatch(fetchEvents())
+  }
 }
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(EventOverview)

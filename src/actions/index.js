@@ -23,7 +23,8 @@ function receiveEvents(events) {
 export function fetchEvents() {
   return dispatch => {
     return fetch("https://morning-peak-70516.herokuapp.com/event/query/events", {
-      method: "GET"
+      method: "GET",
+      headers: { "Content-Type" : "application/json; charset=UTF-8" }
     }).then(response => response.json())
       .then(json => dispatch(receiveEvents(json)))
       // Todo: Add error handling

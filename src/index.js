@@ -9,7 +9,7 @@ import getStore from "./store";
 
 const AppNavigator = StackNavigator(Routes, {
     navigationOptions: {
-        title: ({ state }) => {
+        title: ( state ) => {
             if (state.params) {
                 return `${state.params.title}`;
             }
