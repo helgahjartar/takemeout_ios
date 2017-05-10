@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Text, ListView, View, TextInput, Button } from 'react-native';
 import style from './style';
-import { logInUser, logOutUser, receiveLogin, loginError } from '../../actions/index'
+import { logInUser, logOutUser, receiveLogin, loginError } from '../../actions/index';
 import { connect } from 'react-redux'
 
 class UserAuthentication extends Component {
@@ -45,6 +45,8 @@ class UserAuthentication extends Component {
           onChangeText={passwordHash => this.setState({ passwordHash })}
           secureTextEntry={true}
           />
+          {!isAuthenticated && hasBeenSent && <Text style={style.helperText}>Notendanafn eða lykilorð er vitlaust</Text> }
+
         </View>
         <View style={style.buttonAuthBackground}>
           <View style={style.button}>
@@ -58,15 +60,10 @@ class UserAuthentication extends Component {
               <Button
                 color='#FFFFFF'
                 title='Skrá nýjan notanda'
-                onPress={this.handleSubmit}
                 onPress={() => navigate('UserRegistration')}
               />
             </View>
         </View>
-
-        {!isAuthenticated && hasBeenSent &&
-         <h3>Notendanafn eða lykilorð vitlaust </h3>
-        }
         </View>
     );
   }

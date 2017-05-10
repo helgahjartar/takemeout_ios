@@ -20,7 +20,7 @@ export default StyleSheet.create({
     flex: 0.55,
     paddingLeft: 35,
     paddingRight: 35,
-    paddingBottom: 45,
+    paddingBottom: 15,
     paddingTop: 35,
   },
   authMainTitleContainer: {
@@ -38,6 +38,11 @@ export default StyleSheet.create({
     fontSize: 16,
     paddingBottom:10,
   },
+  helperText: {
+    fontSize: 12,
+    color: '#FF6347',
+    padding: 5
+  },
   inputText: {
     height: 30,
     borderColor: 'gray',
@@ -50,7 +55,7 @@ export default StyleSheet.create({
     flex: 0.1,
     marginTop: 5,
     marginLeft: 90,
-    marginBottom: 5,
+    marginBottom: 29,
     marginRight: 90,
     backgroundColor: '#FFBB33',
   },
