@@ -121,6 +121,7 @@ export function logInUser(userData) {
         res.text().then(token => {
           user_token = token;
           dispatch(receiveLogin(userData));
+          dispatch(NavigationActions.navigate({ routeName: 'EventOverview' }))
         });
       } else {
         dispatch(loginError(userData));

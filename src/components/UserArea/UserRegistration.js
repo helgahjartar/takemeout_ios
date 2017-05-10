@@ -4,6 +4,7 @@ import { StackNavigator } from 'react-navigation';
 import style from './style';
 import { connect } from 'react-redux'
 import { createUser } from '../../actions/index'
+import { validateInput, validateEmail, validatePassword, getValidationState, getEmailValidationState, getPasswordValidationState } from './validators'
 
 class UserRegistration extends Component {
 
@@ -37,6 +38,7 @@ class UserRegistration extends Component {
           value={userName}
           onChangeText={(userName) => this.setState({ userName })}
           />
+          <Text style={style.helperText}>{validateInput(userName)}</Text>
         </View>
         <View style={style.titleContainer}>
           <Text style={style.titleText}>Tölvupóstur:</Text>
@@ -46,6 +48,7 @@ class UserRegistration extends Component {
           value={email}
           onChangeText={(email) => this.setState({ email })}
           />
+          <Text style={style.helperText}>{validateEmail(email)}</Text>
         </View>
         <View style={style.titleContainer}>
           <Text style={style.titleText}>Lykilorð:</Text>
@@ -66,6 +69,7 @@ class UserRegistration extends Component {
           onChangeText={confirmPassword => this.setState({ confirmPassword })}
           secureTextEntry={true}
           />
+          <Text style={style.helperText}>{validatePassword(passwordHash, confirmPassword)}</Text>
         </View>
         <View style={style.buttonBackground}>
           <Button
