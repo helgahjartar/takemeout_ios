@@ -1,4 +1,4 @@
-import { LOGIN_SUCCESS, LOGIN_ERROR, REGISTRATION_ERROR, LOGOUT } from '../actions/index'
+import { LOGIN_SUCCESS, LOGIN_ERROR, REGISTRATION_ERROR, LOGOUT } from '../actions/index';
 
 function auth(state = { }, action) {
   switch (action.type) {
@@ -6,28 +6,28 @@ function auth(state = { }, action) {
       return Object.assign({}, state, {
         isAuthenticated: true,
         hasBeenSent: true,
-        errorMessage: '',
-      })
+        errorMessage: ''
+      });
     case LOGIN_ERROR:
       return Object.assign({}, state, {
         errorMessage: 'User unauthenticated',
         isAuthenticated: false,
         hasBeenSent: true
-      })
+      });
     case LOGOUT:
       return Object.assign({}, state, {
         errorMessage: null,
         isAuthenticated: false,
         hasBeenSent: false
-      })
+      });
     case REGISTRATION_ERROR:
       return Object.assign({}, state, {
         errorMessage: action.errorMessage,
-        registrationError: true,
-      })
+        registrationError: true
+      });
     default:
-      return state
+      return state;
   }
 }
 
-export default auth
+export default auth;
