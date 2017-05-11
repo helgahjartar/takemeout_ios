@@ -1,7 +1,7 @@
 import { handleActions } from 'redux-actions';
-import { RECEIVE_EVENTS, CREATE_EVENT_SUCCESS, CREATE_EVENT_FAILURE } from '../actions/index';
+import { FETCH_EVENTS, RECEIVE_EVENTS, CREATE_EVENT_SUCCESS, CREATE_EVENT_FAILURE } from '../actions/index';
 
-const initialState = { events: { dataBlob: {}, sectionIds: [], rowIds: [] }, success: false, hasBeenSent: false};
+const initialState = { events: { dataBlob: {}, sectionIds: [], rowIds: [] }, success: false, hasBeenSent: false };
 
 export default handleActions({
   RECEIVE_EVENTS (state, action) {
@@ -22,7 +22,19 @@ export default handleActions({
       sucess: false,
       hasBeenSent: true
     });
-  }
+  },
+
+  [`${FETCH_EVENTS}_PENDING`]: (state, action) => ({
+    events: { dataBlob: {}, sectionIds: [], rowIds: [] }
+  }),
+
+  [`${FETCH_EVENTS}_REJECTED`]: (state, action) => ({
+    events: { dataBlob: {}, sectionIds: [], rowIds: [] }
+  }),
+
+  [`${FETCH_EVENTS}_FULFILLED`]: (state, action) => ({
+    events: formatEvents(action.payload)
+  })
 }, initialState);
 
 function formatEvents(events) {
