@@ -1,10 +1,10 @@
-import { createAction } from 'redux-actions';
+//import { createAction } from 'redux-actions';
 import { NavigationActions } from 'react-navigation';
 
 export const CREATE_USER = 'CREATE_USER';
 export const RECEIVE_EVENTS = 'RECEIVE_EVENTS';
 export const CREATE_EVENT_SUCCESS = 'CREATE_EVENT_SUCCESS';
-export const CREATE_EVENT_FAILURE = 'CREATE_EVENT_FAILURE'
+export const CREATE_EVENT_FAILURE = 'CREATE_EVENT_FAILURE';
 export const REGISTRATION_ERROR = 'REGISTRATION_ERROR';
 export const LOGIN_USER = 'LOGIN_USER';
 export const LOGIN_SUCCESS = 'LOGIN_SUCCESS';
@@ -17,18 +17,18 @@ function receiveEvents(events) {
   return {
     type: RECEIVE_EVENTS,
     events: events
-  }
+  };
 }
 
 export function fetchEvents() {
   return dispatch => {
-    return fetch("https://morning-peak-70516.herokuapp.com/event/query/events", {
-      method: "GET",
-      headers: { "Content-Type" : "application/json; charset=UTF-8" }
+    return fetch('https://morning-peak-70516.herokuapp.com/event/query/events', {
+      method: 'GET',
+      headers: { 'Content-Type' : 'application/json; charset=UTF-8' }
     }).then(response => response.json())
-      .then(json => dispatch(receiveEvents(json)))
+      .then(json => dispatch(receiveEvents(json)));
       // Todo: Add error handling
-  }
+  };
 }
 
 function createEventSuccess() {
@@ -36,7 +36,7 @@ function createEventSuccess() {
     type: CREATE_EVENT_SUCCESS,
     success: true,
     hasBeenSent: true
-  }
+  };
 }
 
 function createEventFailure() {
@@ -44,88 +44,83 @@ function createEventFailure() {
     type: CREATE_EVENT_FAILURE,
     success: false,
     hasBeenSent: true
-  }
+  };
 }
 
-function receiveLogin(user) {
+function receiveLogin() {
   return {
     type: LOGIN_SUCCESS,
     isAuthenticated: true
-  }
+  };
 }
 
 function registrationError(msg) {
   return {
     type: REGISTRATION_ERROR,
     errorMessage: msg
-  }
+  };
 }
 
-function loginError(user) {
+function loginError() {
   return {
     type: LOGIN_ERROR,
     errorMessage: 'User not authenticated',
     isAuthenticated: false,
     hasBeenSent: true
-  }
+  };
 }
 
 export function createEvent(data) {
-  console.log(user_token)
-
   return dispatch => {
-    return fetch("https://morning-peak-70516.herokuapp.com/event/registration/event", {
-      method: "POST",
+    return fetch('https://morning-peak-70516.herokuapp.com/event/registration/event', {
+      method: 'POST',
       headers: {
-        "Content-Type" : "application/json; charset=UTF-8",
-        "token" : user_token
+        'Content-Type' : 'application/json; charset=UTF-8',
+        'token' : user_token
       },
       body: JSON.stringify(data)
     }).then(res => {
-        if (res.status === 200)
-          dispatch(createEventSuccess())
-        else
-          dispatch(createEventFailure())
-    })
-  }
+      if (res.status === 200)
+        dispatch(createEventSuccess());
+      else
+        dispatch(createEventFailure());
+    });
+  };
 }
 
 export function createUser(userData) {
   return dispatch => {
-    return fetch("https://morning-peak-70516.herokuapp.com/user/auth/register", {
-      method: "POST",
-      headers: { "Content-Type" : "application/json; charset=UTF-8"},
+    return fetch('https://morning-peak-70516.herokuapp.com/user/auth/register', {
+      method: 'POST',
+      headers: { 'Content-Type' : 'application/json; charset=UTF-8'},
       body: JSON.stringify(userData)
     }).then(res => {
       if (res.ok) dispatch(NavigationActions.navigate({ routeName: 'UserAuthentication' }));
-      else dispatch(registrationError("User already exists"))
-    })
-  }
+      else dispatch(registrationError('User already exists'));
+    });
+  };
 }
 
 export function logOutUser() {
   user_token = null;
-
-  dispatch({ type: LOGOUT })
+  dispatch({ type: LOGOUT });
 }
 
 export function logInUser(userData) {
-
   return dispatch => {
-    return fetch("https://morning-peak-70516.herokuapp.com/user/auth/login", {
-      method: "POST",
-      headers: { "Content-Type" : "application/json; charset=UTF-8"},
+    return fetch('https://morning-peak-70516.herokuapp.com/user/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type' : 'application/json; charset=UTF-8'},
       body: JSON.stringify(userData)
     }).then(res => {
       if (res.ok) {
         res.text().then(token => {
           user_token = token;
-          dispatch(receiveLogin(userData));
-          dispatch(NavigationActions.navigate({ routeName: 'EventOverview' }))
+          dispatch(receiveLogin());
         });
       } else {
-        dispatch(loginError(userData));
+        dispatch(loginError());
       }
-    })
-  }
+    });
+  };
 }
