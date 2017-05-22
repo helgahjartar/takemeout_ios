@@ -26,17 +26,49 @@ class UserAuthentication extends Component {
 
     return (
         <View style={style.container}>
+        {!isAuthenticated && !hasBeenSent &&
         <View style={style.authMainTitleContainer}>
           <Text style={style.mainTitleText}>Skráðu þig inn</Text>
         </View>
+        }
+        {isAuthenticated && hasBeenSent &&
+        <View style={style.authMainTitleContainer}>
+          <Text style={style.mainTitleText}>Vertu velkomin {this.state.userName}! </Text>
+            <View style={style.buttonLoggedIn}>
+              <Button
+                  color='#FFFFFF'
+                  title='Skrá viðburð'
+                  onPress={() => navigate('EventRegContainer')}
+                />
+              </View>
+              <View style={style.buttonLoggedIn}>
+              <Button
+                color='#FFFFFF'
+                title='Skoða viðburði'
+                onPress={() => navigate('EventOverview')}
+              />
+            </View>
+            <View style={style.buttonLoggedIn}>
+            <Button
+              color='#FFFFFF'
+              title='Skrá mig út'
+              onPress={logOutUser}
+            />
+          </View>
+        </View>
+      }
+        {!isAuthenticated && !hasBeenSent &&
         <View style={style.titleAuthContainer}>
           <TextInput
+          autoCapitalize="none"
           style={style.inputText}
           placeholder="Notendanafn"
           value={userName}
           onChangeText={(userName) => this.setState({ userName })}
           />
         </View>
+      }
+        {!isAuthenticated && !hasBeenSent &&
         <View style={style.titleAuthContainer}>
           <TextInput
           style={style.inputText}
@@ -46,8 +78,9 @@ class UserAuthentication extends Component {
           secureTextEntry={true}
           />
           {!isAuthenticated && hasBeenSent && <Text style={style.helperText}>Notendanafn eða lykilorð er vitlaust</Text> }
-
         </View>
+      }
+      {!isAuthenticated && !hasBeenSent &&
         <View style={style.buttonAuthBackground}>
           <View style={style.button}>
               <Button
@@ -64,6 +97,8 @@ class UserAuthentication extends Component {
               />
             </View>
         </View>
+      }
+
         </View>
     );
   }
