@@ -28,7 +28,7 @@ export function saveEventForm(data) {
     type: SAVE_EVENT_FORM,
     eventName: data.name,
     eventDesc: data.description
-  }
+  };
 }
 
 export function savePerformerForm(data) {
@@ -37,7 +37,7 @@ export function savePerformerForm(data) {
     performerName: data.performer,
     performerDescIce: data.descriptionIce,
     performerDescEng: data.descriptionEng
-  }
+  };
 }
 
 export function saveLocationForm(data) {
@@ -45,7 +45,7 @@ export function saveLocationForm(data) {
     type: SAVE_LOCATION_FORM,
     locationName: data.location,
     locationAddress: data.address
-  }
+  };
 }
 
 export function fetchEvents() {
@@ -61,20 +61,20 @@ export function fetchEvents() {
 
 export function fetchLocations() {
   return dispatch => {
-    return fetch("https://morning-peak-70516.herokuapp.com/event/query/locations", {
-      method: "GET",
+    return fetch('https://morning-peak-70516.herokuapp.com/event/query/locations', {
+      method: 'GET',
       headers: { "Content-Type" : "application/json; charset=UTF-8" }
-    }).then(response => response.json())
+    }).then(response => response.json());
       // Todo: Add error handling
   }
 }
 
 export function fetchPerformers() {
   return dispatch => {
-    return fetch("https://morning-peak-70516.herokuapp.com/event/query/performers", {
-      method: "GET",
+    return fetch('https://morning-peak-70516.herokuapp.com/event/query/performers', {
+      method: 'GET',
       headers: { "Content-Type" : "application/json; charset=UTF-8" }
-    }).then(response => response.json())
+    }).then(response => response.json());
       // Todo: Add error handling
   }
 }
@@ -151,7 +151,12 @@ export function createUser(userData) {
 
 export function logOutUser() {
   user_token = null;
-  dispatch({ type: LOGOUT });
+  return {
+    type: LOGOUT,
+    errorMessage: '',
+    isAuthenticated: false,
+    hasBeenSent: false
+  }
 }
 
 export function logInUser(userData) {
