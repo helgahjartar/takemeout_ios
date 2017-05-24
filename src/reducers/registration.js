@@ -1,5 +1,5 @@
-import { handleActions } from 'redux-actions';
-import { RECEIVE_EVENTS, CREATE_EVENT_SUCCESS, CREATE_EVENT_FAILURE } from '../actions/index';
+import { handleActions } from 'redux-actions'
+import { RECEIVE_EVENTS, CREATE_EVENT_SUCCESS, CREATE_EVENT_FAILURE, SAVE_FORM_STATE } from '../actions/index'
 
 const initialState = { events: { dataBlob: {}, sectionIds: [], rowIds: [] }, success: false, hasBeenSent: false};
 

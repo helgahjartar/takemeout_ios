@@ -72,5 +72,13 @@ export default StyleSheet.create({
     justifyContent: 'space-around',
     flexDirection: 'row',
     marginTop: 10
+  },
+  buttonLoggedIn: {
+    backgroundColor: '#FFBB33',
+    justifyContent: 'space-around',
+    flexDirection: 'row',
+    marginTop: 10,
+    marginLeft: 10,
+    marginRight: 40,
   }
 });

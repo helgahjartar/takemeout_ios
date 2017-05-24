@@ -1,13 +1,15 @@
-import { combineReducers } from 'redux';
-import registration from './registration';
-import userAuth from './userAuth';
+import { combineReducers } from "redux";
+import registration from "./registration";
+import userAuth from "./userAuth"
+import formSave from "./formSave"
 
-function getRootReducer(navReducer) {
-  return combineReducers({
-    nav: navReducer,
-    registration: registration,
-    userAuth: userAuth
-  });
+export default function getRootReducer(navReducer) {
+    return combineReducers({
+        nav: navReducer,
+        registration: registration,
+        userAuth: userAuth,
+        formSave: formSave
+    });
 }
 
 export default getRootReducer;

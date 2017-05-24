@@ -10,6 +10,9 @@ export const LOGIN_USER = 'LOGIN_USER';
 export const LOGIN_SUCCESS = 'LOGIN_SUCCESS';
 export const LOGIN_ERROR = 'LOGIN_ERROR';
 export const LOGOUT = 'LOGOUT';
+export const SAVE_EVENT_FORM = 'SAVE_EVENT_FORM';
+export const SAVE_PERFORMER_FORM = 'SAVE_PERFORMER_FORM';
+export const SAVE_LOCATION_FORM = 'SAVE_LOCATION_FORM';
 
 let user_token = null;
 
@@ -18,6 +21,31 @@ function receiveEvents(events) {
     type: RECEIVE_EVENTS,
     events: events
   };
+}
+
+export function saveEventForm(data) {
+  return {
+    type: SAVE_EVENT_FORM,
+    eventName: data.name,
+    eventDesc: data.description
+  }
+}
+
+export function savePerformerForm(data) {
+  return {
+    type: SAVE_PERFORMER_FORM,
+    performerName: data.performer,
+    performerDescIce: data.descriptionIce,
+    performerDescEng: data.descriptionEng
+  }
+}
+
+export function saveLocationForm(data) {
+  return {
+    type: SAVE_LOCATION_FORM,
+    locationName: data.location,
+    locationAddress: data.address
+  }
 }
 
 export function fetchEvents() {
@@ -29,6 +57,26 @@ export function fetchEvents() {
       .then(json => dispatch(receiveEvents(json)));
       // Todo: Add error handling
   };
+}
+
+export function fetchLocations() {
+  return dispatch => {
+    return fetch("https://morning-peak-70516.herokuapp.com/event/query/locations", {
+      method: "GET",
+      headers: { "Content-Type" : "application/json; charset=UTF-8" }
+    }).then(response => response.json())
+      // Todo: Add error handling
+  }
+}
+
+export function fetchPerformers() {
+  return dispatch => {
+    return fetch("https://morning-peak-70516.herokuapp.com/event/query/performers", {
+      method: "GET",
+      headers: { "Content-Type" : "application/json; charset=UTF-8" }
+    }).then(response => response.json())
+      // Todo: Add error handling
+  }
 }
 
 function createEventSuccess() {
