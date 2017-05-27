@@ -2,7 +2,6 @@
 import { NavigationActions } from 'react-navigation';
 
 export const CREATE_USER = 'CREATE_USER';
-export const RECEIVE_EVENTS = 'RECEIVE_EVENTS';
 export const CREATE_EVENT_SUCCESS = 'CREATE_EVENT_SUCCESS';
 export const CREATE_EVENT_FAILURE = 'CREATE_EVENT_FAILURE';
 export const REGISTRATION_ERROR = 'REGISTRATION_ERROR';
@@ -14,14 +13,13 @@ export const SAVE_EVENT_FORM = 'SAVE_EVENT_FORM';
 export const SAVE_PERFORMER_FORM = 'SAVE_PERFORMER_FORM';
 export const SAVE_LOCATION_FORM = 'SAVE_LOCATION_FORM';
 
-let user_token = null;
+export const FETCH_EVENTS = 'FETCH_EVENTS';
 
-function receiveEvents(events) {
-  return {
-    type: RECEIVE_EVENTS,
-    events: events
-  };
-}
+let user_token = null;
+const defaultHeader = {
+  'Content-Type' : 'application/json; charset=UTF-8'
+};
+const serviceUrl = 'https://morning-peak-70516.herokuapp.com';
 
 export function saveEventForm(data) {
   return {
@@ -48,16 +46,17 @@ export function saveLocationForm(data) {
   };
 }
 
-export function fetchEvents() {
-  return dispatch => {
-    return fetch('https://morning-peak-70516.herokuapp.com/event/query/events', {
+export const fetchEvents = () => ({
+  type: FETCH_EVENTS,
+  payload: new Promise(resolve => {
+    fetch(serviceUrl+'/event/query/events', {
       method: 'GET',
-      headers: { 'Content-Type' : 'application/json; charset=UTF-8' }
-    }).then(response => response.json())
-      .then(json => dispatch(receiveEvents(json)));
-      // Todo: Add error handling
-  };
-}
+      headers: defaultHeader
+    }).then(res => {
+      resolve(res.json());
+    })
+  })
+});
 
 export function fetchLocations() {
   return dispatch => {
@@ -120,12 +119,9 @@ function loginError() {
 
 export function createEvent(data) {
   return dispatch => {
-    return fetch('https://morning-peak-70516.herokuapp.com/event/registration/event', {
+    return fetch(serviceUrl+'/event/registration/event', {
       method: 'POST',
-      headers: {
-        'Content-Type' : 'application/json; charset=UTF-8',
-        'token' : user_token
-      },
+      headers: Object.assign({}, defaultHeader, {'token' : user_token}),
       body: JSON.stringify(data)
     }).then(res => {
       if (res.status === 200)
@@ -138,9 +134,9 @@ export function createEvent(data) {
 
 export function createUser(userData) {
   return dispatch => {
-    return fetch('https://morning-peak-70516.herokuapp.com/user/auth/register', {
+    return fetch(serviceUrl+'/user/auth/register', {
       method: 'POST',
-      headers: { 'Content-Type' : 'application/json; charset=UTF-8'},
+      headers: defaultHeader,
       body: JSON.stringify(userData)
     }).then(res => {
       if (res.ok) dispatch(NavigationActions.navigate({ routeName: 'UserAuthentication' }));
@@ -161,9 +157,9 @@ export function logOutUser() {
 
 export function logInUser(userData) {
   return dispatch => {
-    return fetch('https://morning-peak-70516.herokuapp.com/user/auth/login', {
+    return fetch(serviceUrl+'/user/auth/login', {
       method: 'POST',
-      headers: { 'Content-Type' : 'application/json; charset=UTF-8'},
+      headers: defaultHeader,
       body: JSON.stringify(userData)
     }).then(res => {
       if (res.ok) {

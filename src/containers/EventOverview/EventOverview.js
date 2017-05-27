@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import { StackNavigator } from 'react-navigation';
-import { Text, ListView, View } from 'react-native';
+import { Text, ListView, View, ActivityIndicator } from 'react-native';
 import EventRow from './EventRow';
 import DateRow from './DateRow';
-import style from './style'
-import { connect } from 'react-redux'
-import { fetchEvents } from '../../actions/index'
-
-
+import style from './style';
+import { connect } from 'react-redux';
+import { fetchEvents } from '../../actions/index';
+import ErrorScreen from '../../components/ErrorScreen/ErrorScreen';
+import LoadingSymbolOverlay from '../../components/LoadingSymbolOverlay/LoadingSymbolOverlay';
 
 class EventOverview extends Component {
   constructor(props) {
@@ -30,25 +30,46 @@ class EventOverview extends Component {
   }
 
   render() {
-    const { events } = this.props;
-    const { ds } = this.state;
-    dataSource = ds.cloneWithRowsAndSections(events.dataBlob, events.sectionIds, events.rowIds)
-    return (
-      <ListView
-        style={style.container}
-        dataSource={dataSource}
-        renderRow={(event) => <EventRow event={event} />}
-        renderSectionHeader={(date) => <DateRow date={date} />}
-        renderSeparator={(sectionId, rowId) => <View key={rowId} style={style.separator} />}
-      />
-    );
+    const { isPending, errorMsg, events } = this.props;
+
+    let viewBody;
+    if (isPending) {
+      viewBody = (
+        <View>
+          <LoadingSymbolOverlay />
+        </View>
+      )
+    }
+
+    else if(errorMsg) {
+      viewBody = (
+        <ErrorScreen errorMsg={errorMsg} />
+      )
+    } else {
+      const { ds } = this.state;
+      dataSource = ds.cloneWithRowsAndSections(events.dataBlob, events.sectionIds, events.rowIds);
+      viewBody =  (
+        <ListView
+          style={style.container}
+          dataSource={dataSource}
+          renderRow={(event) => <EventRow event={event} />}
+          renderSectionHeader={(date) => <DateRow date={date} />}
+          renderSeparator={(sectionId, rowId) => <View key={rowId} style={style.separator} />}
+        />
+      )
+    }
+
+    return viewBody;
   }
 }
 
 function mapStateToProps(state) {
-  const { events } = state.registration
+  const { isPending, errorMsg, eventData } = state.event.overview;
+  console.log(eventData);
   return {
-    events : events
+    isPending : isPending,
+    errorMsg : errorMsg,
+    events : eventData
   }
 }
 
