@@ -1,5 +1,6 @@
 import { handleActions } from 'redux-actions';
-import { FETCH_EVENTS, RECEIVE_EVENTS, CREATE_EVENT_SUCCESS, CREATE_EVENT_FAILURE } from '../actions/index';
+import { FETCH_EVENTS } from '../actions/eventQueryActions';
+import { CREATE_EVENT } from '../actions/eventRegistrationActions';
 
 const initialState = {
   overview: {
@@ -11,24 +12,37 @@ const initialState = {
       rowIds: []
     }
   },
-  success: false,
-  hasBeenSent: false
+  registration: {
+    isPending: false,
+    success: false,
+    hasBeenSent: false
+  }
 };
 
 export default handleActions({
-  CREATE_EVENT_SUCCESS (state, action) {
-    return Object.assign({}, state, {
+  [`${CREATE_EVENT}_PENDING`]: (state, action) => ({
+    registration: {
+      isPending: true,
+      success: false,
+      hasBeenSent: false
+    }
+  }),
+
+  [`${CREATE_EVENT}_REJECTED`]: (state, action) => ({
+    registration: {
+      isPending: false,
+      success: false,
+      hasBeenSent: true
+    }
+  }),
+
+  [`${CREATE_EVENT}_FULFILLED`]: (state, action) => ({
+    registration: {
+      isPending: false,
       success: true,
       hasBeenSent: true
-    });
-  },
-
-  CREATE_EVENT_FAILURE (state, action) {
-    return Object.assign({}, state, {
-      sucess: false,
-      hasBeenSent: true
-    });
-  },
+    }
+  }),
 
   [`${FETCH_EVENTS}_PENDING`]: (state, action) => ({
     overview: {

@@ -5,7 +5,7 @@ import EventRow from './EventRow';
 import DateRow from './DateRow';
 import style from './style';
 import { connect } from 'react-redux';
-import { fetchEvents } from '../../actions/index';
+import { fetchEvents } from '../../actions/eventQueryActions';
 import ErrorScreen from '../../components/ErrorScreen/ErrorScreen';
 import LoadingSymbolOverlay from '../../components/LoadingSymbolOverlay/LoadingSymbolOverlay';
 

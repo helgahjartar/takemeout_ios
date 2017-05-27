@@ -1,4 +1,4 @@
-import { SAVE_EVENT_FORM, SAVE_PERFORMER_FORM, SAVE_LOCATION_FORM } from '../actions/index';
+import { SAVE_EVENT_FORM, SAVE_PERFORMER_FORM, SAVE_LOCATION_FORM } from '../actions/eventRegistrationActions';
 
 function form(state = { }, action) {
   switch (action.type) {

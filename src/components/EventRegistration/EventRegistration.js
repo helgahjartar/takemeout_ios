@@ -1,10 +1,11 @@
-import React, { Component } from 'react'
-import { Text, ListView, View, TextInput, Button, ScrollView, DatePickerIOS, PickerIOS } from 'react-native'
-import { StackNavigator } from 'react-navigation'
+import React, { Component } from 'react';
+import { Text, ListView, View, TextInput, Button, ScrollView, DatePickerIOS, PickerIOS } from 'react-native';
+import { StackNavigator } from 'react-navigation';
 import style from './style';
-import { connect } from 'react-redux'
-import { createEvent, fetchLocations, fetchPerformers, saveEventForm } from '../../actions/index'
-import { validateInput, validateTitle, validateDescription, returnFormErrors, validateDateInput } from '../Helpers/validators'
+import { connect } from 'react-redux';
+import { fetchLocations, fetchPerformers } from '../../actions/eventQueryActions';
+import { createEvent, saveEventForm } from '../../actions/eventRegistrationActions';
+import { validateInput, validateTitle, validateDescription, returnFormErrors, validateDateInput } from '../Helpers/validators';
 
 var PickerItemIOS = PickerIOS.Item;
 
@@ -176,8 +177,8 @@ class EventRegistration extends Component {
 }
 
 function mapStateToProps(state) {
-  const { success, hasBeenSent } = state.registration
-  const { isAuthenticated } = state.userAuth
+  const { success, hasBeenSent } = state.event.registration;
+  const { isAuthenticated } = state.userAuth;
   const { eventName, eventLoc, eventPerf, eventDesc } = state.formSave;
   console.log(state);
   return {

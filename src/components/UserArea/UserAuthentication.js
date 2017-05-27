@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Text, ListView, View, TextInput, Button } from 'react-native';
 import style from './style';
-import { logInUser, logOutUser, receiveLogin, loginError } from '../../actions/index';
+import { login, logOutUser, receiveLogin, loginError } from '../../actions/userAuthActions';
 import { connect } from 'react-redux'
 
 class UserAuthentication extends Component {
@@ -117,8 +117,8 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    logInUser: (data) => dispatch(logInUser(data)),
-    logOutUser: () => dispatch(logOutUser())
+    logInUser: (data) => dispatch(login(data)),
+    logOutUser: () => dispatch(logout())
   }
 }
 
