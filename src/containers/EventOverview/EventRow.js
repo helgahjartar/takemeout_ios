@@ -8,8 +8,8 @@ export default class EventRow extends Component {
     return (
       <View style={style.eventRow}>
         <Text style={style.eventNameText}>{event.name}</Text>
-        <Text style={style.locationText}>{event.location}</Text>
-        <Text style={style.typeText}>{event.type}</Text>
+        <Text style={style.locationText}>{event.locationName}</Text>
+        <Text style={style.typeText}>{event.typeDescriptionIce}</Text>
       </View>
     );
   }

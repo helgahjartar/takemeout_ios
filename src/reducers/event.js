@@ -1,15 +1,21 @@
 import { handleActions } from 'redux-actions';
 import { FETCH_EVENTS, RECEIVE_EVENTS, CREATE_EVENT_SUCCESS, CREATE_EVENT_FAILURE } from '../actions/index';
 
-const initialState = { events: { dataBlob: {}, sectionIds: [], rowIds: [] }, success: false, hasBeenSent: false };
+const initialState = {
+  overview: {
+    isPending: true,
+    errorMsg: null,
+    eventData: {
+      dataBlob: {},
+      sectionIds: [],
+      rowIds: []
+    }
+  },
+  success: false,
+  hasBeenSent: false
+};
 
 export default handleActions({
-  RECEIVE_EVENTS (state, action) {
-    return Object.assign({}, state, {
-      events: formatEvents(action.events)
-    });
-  },
-
   CREATE_EVENT_SUCCESS (state, action) {
     return Object.assign({}, state, {
       success: true,
@@ -25,15 +31,35 @@ export default handleActions({
   },
 
   [`${FETCH_EVENTS}_PENDING`]: (state, action) => ({
-    events: { dataBlob: {}, sectionIds: [], rowIds: [] }
+    overview: {
+      isPending: true,
+      errorMsg: null,
+      eventData: {
+        dataBlob: {},
+        sectionIds: [],
+        rowIds: []
+      }
+    }
   }),
 
   [`${FETCH_EVENTS}_REJECTED`]: (state, action) => ({
-    events: { dataBlob: {}, sectionIds: [], rowIds: [] }
+    overview: {
+      isPending: false,
+      errorMsg: action.errorMsg,
+      eventData: {
+        dataBlob: {},
+        sectionIds: [],
+        rowIds: []
+      }
+    }
   }),
 
   [`${FETCH_EVENTS}_FULFILLED`]: (state, action) => ({
-    events: formatEvents(action.payload)
+    overview: {
+      isPending: false,
+      errorMsg: null,
+      eventData: formatEvents(action.payload)
+    }
   })
 }, initialState);
 

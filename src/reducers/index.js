@@ -1,11 +1,11 @@
 import { combineReducers } from 'redux';
-import registration from './registration';
+import event from './event';
 import userAuth from './userAuth';
 
 function getRootReducer(navReducer) {
   return combineReducers({
     nav: navReducer,
-    registration: registration,
+    event: event,
     userAuth: userAuth
   });
 }

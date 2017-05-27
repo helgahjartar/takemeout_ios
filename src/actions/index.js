@@ -2,7 +2,6 @@
 import { NavigationActions } from 'react-navigation';
 
 export const CREATE_USER = 'CREATE_USER';
-export const RECEIVE_EVENTS = 'RECEIVE_EVENTS';
 export const CREATE_EVENT_SUCCESS = 'CREATE_EVENT_SUCCESS';
 export const CREATE_EVENT_FAILURE = 'CREATE_EVENT_FAILURE';
 export const REGISTRATION_ERROR = 'REGISTRATION_ERROR';
@@ -18,24 +17,6 @@ const defaultHeader = {
   'Content-Type' : 'application/json; charset=UTF-8'
 };
 const serviceUrl = 'https://morning-peak-70516.herokuapp.com';
-
-function receiveEvents(events) {
-  return {
-    type: RECEIVE_EVENTS,
-    events: events
-  };
-}
-
-export function fetchEvents2() {
-  return dispatch => {
-    return fetch(serviceUrl+'/event/query/events', {
-      method: 'GET',
-      headers: defaultHeader
-    }).then(response => response.json())
-      .then(json => dispatch(receiveEvents(json)));
-      // Todo: Add error handling
-  };
-}
 
 export const fetchEvents = () => ({
   type: FETCH_EVENTS,
