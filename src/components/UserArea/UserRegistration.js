@@ -4,7 +4,7 @@ import { StackNavigator } from 'react-navigation';
 import style from './style';
 import { connect } from 'react-redux'
 import { createUser } from '../../actions/index'
-import { validateInput, validateEmail, validatePassword, getValidationState, getEmailValidationState, getPasswordValidationState } from './validators'
+import { validateInput, validateEmail, validatePassword, getValidationState, getEmailValidationState, getPasswordValidationState } from '../Helpers/validators'
 
 class UserRegistration extends Component {
 
