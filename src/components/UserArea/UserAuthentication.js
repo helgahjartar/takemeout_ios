@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import { Text, ListView, View, TextInput, Button } from 'react-native';
+import { Text, View, TextInput, Button } from 'react-native';
 import style from './style';
-import { login, logout, receiveLogin, loginError } from '../../actions/userAuthActions';
+import { login, logout } from '../../actions/userAuthActions';
 import { connect } from 'react-redux'
 
 class UserAuthentication extends Component {
@@ -14,9 +14,7 @@ class UserAuthentication extends Component {
    handleSubmit(event) {
      event.preventDefault();
      const { logInUser } = this.props;
-     //this.state.passwordHash = hash(this.state.passwordHash)
      logInUser(this.state);
-     console.log(this.state);
   }
 
   render() {

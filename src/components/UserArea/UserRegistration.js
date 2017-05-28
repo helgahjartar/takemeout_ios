@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, ListView, View, TextInput, Button } from 'react-native';
+import { Text, View, TextInput, Button } from 'react-native';
 import { StackNavigator } from 'react-navigation';
 import style from './style';
 import { connect } from 'react-redux'
@@ -17,9 +17,7 @@ class UserRegistration extends Component {
    handleSubmit(event) {
      event.preventDefault();
      const { createUser } = this.props;
-     //this.state.passwordHash = hash(this.state.passwordHash)
      createUser(this.state);
-     console.log(this.state);
   }
 
   render() {
@@ -85,7 +83,6 @@ class UserRegistration extends Component {
 
 function mapStateToProps(state) {
   const { registrationError, errorMessage } = state.userAuth
-
   return {
     registrationError: registrationError,
     errorMessage: errorMessage

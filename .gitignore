@@ -1,6 +1,6 @@
 .DS_Store
-ios/build
-android/build
+ios/
+android/
 gradlew
 gradlew.bat
 gradle

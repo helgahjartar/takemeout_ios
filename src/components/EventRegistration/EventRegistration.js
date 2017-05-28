@@ -1,38 +1,40 @@
 import React, { Component } from 'react';
-import { Text, ListView, View, TextInput, Button, ScrollView, DatePickerIOS, PickerIOS } from 'react-native';
+import { Text, View, TextInput, Button, ScrollView } from 'react-native';
 import { StackNavigator } from 'react-navigation';
 import style from './style';
+import ModalPicker from './ModalPicker';
+import ModalDatePicker from './ModalDatePicker';
 import { connect } from 'react-redux';
 import { fetchLocations, fetchPerformers, fetchTypes } from '../../actions/eventQueryActions';
 import { createEvent, saveEventForm } from '../../actions/eventRegistrationActions';
 import { validateInput, validateTitle, validateDescription, returnFormErrors, validateDateInput } from '../Helpers/validators';
 
-var PickerItemIOS = PickerIOS.Item;
-
 class EventRegistration extends Component {
-
   static defaultProps = {
     time: new Date(),
-    timeZoneOffsetInHours: (-1) * (new Date()).getTimezoneOffset() / 60,
+    timeOffset: (-1) * (new Date()).getTimezoneOffset(),
   };
 
   constructor(props) {
-     super(props);
-     this.state = {newForm: true, name: '', description: '', type: 'Tónleikar', performer :'Gísli Pálmi', location: 'Prikið', time: this.props.time, timeZoneOffsetInHours: this.props.timeZoneOffsetInHours};
-     this.handleSubmit = this.handleSubmit.bind(this);
-     const { fetchPickerData } = this.props;
-     fetchPickerData();
-   }
-
-   onDateChange = (time) => {
-     this.setState({time: time});
-   };
+    super(props);
+    this.state = {
+      newForm: true,
+      name: null,
+      description: null,
+      selectedPerformer : null,
+      selectedLocation: null,
+      selectedType: null,
+      time: this.props.time,
+      timeZoneOffset: this.props.timeOffset
+    };
+    this.handleSubmit = this.handleSubmit.bind(this);
+    const { fetchPickerData } = this.props;
+    fetchPickerData();
+  }
 
    handleSubmit(event) {
-     event.preventDefault();
      const errors = returnFormErrors(this.state);
-     var timeToIso = this.state.time.toISOString();
-     // Todo: Change this
+
      if (errors.value != null) {
        event.preventDefault();
        console.log(errors);
@@ -40,7 +42,16 @@ class EventRegistration extends Component {
        return;
      }
      const { createEvent } = this.props;
-     createEvent(this.state);
+
+     createEvent({
+       name: this.state.name,
+       descriptionEng: this.state.description,
+       descriptionIce: this.state.description,
+       time: this.state.time.toISOString(),
+       typeId: this.state.selectedType,
+       locationId: this.state.selectedLocation,
+       performerIds: [ this.state.selectedPerformer ]
+     });
      this.state.newForm = false;
   }
 
@@ -56,7 +67,7 @@ class EventRegistration extends Component {
 
 
   render() {
-    const { name, location, performer, description, time, type, newForm} = this.state;
+    const { name, selectedLocation, selectedPerformer, selectedType, description, time, newForm} = this.state;
     const { locations, performers, types, success, hasBeenSent, isAuthenticated, eventName, eventDesc } = this.props;
     console.log(this.props);
 
@@ -69,79 +80,57 @@ class EventRegistration extends Component {
         <View style={style.inputContainer}>
           <Text style={style.titleText}>Skráðu titil viðburðar:</Text>
           <TextInput
-          style={style.inputText}
-          value={name}
-          onChangeText={(name) => this.setState({ name })}
+            style={style.inputText}
+            value={name}
+            onChangeText={(name) => this.setState({ name })}
           />
           <Text style={style.helperText}>{validateTitle(name)}</Text>
         </View>
         <View style={style.inputContainer}>
           <Text style={style.titleText}>Veldu staðsetningu eða skráðu nýja:</Text>
-          <PickerIOS
-            selectedValue={location}
-            onValueChange={(location) => this.setState({location: location})}>
-            {locations.data.map(l => {
-              return (
-                <PickerItemIOS
-                  key={l.key}
-                  value={l.value}
-                  label={l.label}
-                />
-              )
-            })}
-          </PickerIOS>
+          <ModalPicker
+            placeholder={'Veldu Staðsetningu'}
+            items={locations.data}
+            selectedValue={selectedLocation}
+            onValueChange={(value) => this.setState({ selectedLocation: value })}
+            />
         </View>
         <View style={style.inputContainer}>
           <Text style={style.titleText}>Veldu flytjanda eða skráðu nýjan:</Text>
-          <PickerIOS
-            selectedValue={performer}
-            onValueChange={(performer) => this.setState({performer: performer})}>
-            {performers.data.map(p => {
-              return (
-                <PickerItemIOS
-                  key={p.key}
-                  value={p.value}
-                  label={p.label}
-                />
-              )
-            })}
-          </PickerIOS>
+          <ModalPicker
+            placeholder={'Veldu Flytjanda'}
+            items={performers.data}
+            selectedValue={selectedPerformer}
+            onValueChange={(value) => this.setState({ selectedPerformer: value })}
+          />
         </View>
         <View style={style.inputContainer}>
           <Text style={style.titleText}>Veldu dagsetning og tíma viðburðar:</Text>
-            <DatePickerIOS
-              date={time}
-              mode="datetime"
-              timeZoneOffsetInMinutes={this.state.timeZoneOffsetInHours * 60}
-              onDateChange={this.onDateChange}
-              //style={style.timeComponent}
+            <ModalDatePicker
+              time={this.state.time}
+              timeOffset={this.state.timeZoneOffset}
+              mode='datetime'
+              onDateChange={(value) => this.setState({ time: value })}
             />
             <Text style={style.helperText}>{validateDateInput(time.toISOString())}</Text>
         </View>
         <View style={style.inputContainer}>
-          <Text style={style.titleText}>Veldu týpu af viðburði:</Text>
-          <PickerIOS
-            selectedValue={type}
-            onValueChange={(type) => this.setState({type: type})}>
-            {types.data.map(t => {
-              return (
-                <PickerItemIOS
-                  key={t.key}
-                  value={t.value}
-                  label={t.label}
-                />
-              )
-            })}
-         </PickerIOS>
+          <Text style={style.titleText}>Veldu Tegund Viðburðar:</Text>
+          <ModalPicker
+            placeholder={'Veldu Tegund Viðburðar'}
+            items={types.data}
+            selectedValue={selectedType}
+            onValueChange={(value) => this.setState({ selectedType: value })}
+          />
         </View>
         <View style={style.inputContainer}>
-        <Text style={style.titleText}>Skráðu lýsingu sem birtist með viðburði:</Text>
+          <Text style={style.titleText}>Skráðu lýsingu sem birtist með viðburði:</Text>
           <TextInput
-          style={style.descText}
-          value={description}
-          multiline = {true}
-          numberOfLines = {4}
-          onChangeText={(description) => this.setState({ description })}
+            style={style.descText}
+            value={description}
+            multiline = {true}
+            numberOfLines = {4}
+            onChangeText={(description) => this.setState({ description })}
           />
           <Text style={style.helperText}>{validateDescription(description)}</Text>
           {!success && hasBeenSent && <Text style={style.helperText}>Ekki tókst að skrá viðburð - vinsamlegast reyndu aftur</Text>}

@@ -4,6 +4,8 @@ export const SAVE_EVENT_FORM = 'SAVE_EVENT_FORM';
 export const SAVE_PERFORMER_FORM = 'SAVE_PERFORMER_FORM';
 export const SAVE_LOCATION_FORM = 'SAVE_LOCATION_FORM';
 export const CREATE_EVENT = 'CREATE_EVENT';
+export const CREATE_PERFORMER = 'CREATE_PERFORMER';
+export const CREATE_LOCATION = 'CREATE_LOCATION';
 
 export const saveEventForm = (data) => ({
   type: SAVE_EVENT_FORM,
@@ -26,8 +28,8 @@ export const saveLocationForm = (data) => ({
 
 export const createEvent = (data) => ({
   type: CREATE_EVENT,
-  payload: new Promise(resolve => {
-    fetch(serviceUrl+'event/registration/event' , {
+  payload: new Promise((resolve, reject) => {
+    fetch(serviceUrl+'/event/registration/event' , {
       method: 'POST',
       headers: Object.assign({}, defaultHeader, { 'token' : getToken() }),
       body: JSON.stringify(data)

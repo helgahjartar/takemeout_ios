@@ -116,5 +116,5 @@ export default StyleSheet.create({
     borderColor: 'gray',
     marginBottom: 15,
     height: 15,
-  }
+  },
 });
