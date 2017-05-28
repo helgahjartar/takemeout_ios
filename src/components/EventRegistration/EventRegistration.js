@@ -3,7 +3,7 @@ import { Text, ListView, View, TextInput, Button, ScrollView, DatePickerIOS, Pic
 import { StackNavigator } from 'react-navigation';
 import style from './style';
 import { connect } from 'react-redux';
-import { fetchLocations, fetchPerformers } from '../../actions/eventQueryActions';
+import { fetchLocations, fetchPerformers, fetchTypes } from '../../actions/eventQueryActions';
 import { createEvent, saveEventForm } from '../../actions/eventRegistrationActions';
 import { validateInput, validateTitle, validateDescription, returnFormErrors, validateDateInput } from '../Helpers/validators';
 
@@ -20,10 +20,8 @@ class EventRegistration extends Component {
      super(props);
      this.state = {newForm: true, name: '', description: '', type: 'Tónleikar', performer :'Gísli Pálmi', location: 'Prikið', time: this.props.time, timeZoneOffsetInHours: this.props.timeZoneOffsetInHours};
      this.handleSubmit = this.handleSubmit.bind(this);
-     const { fetchLocations } = this.props;
-     const { fetchPerformers } = this.props;
-     fetchLocations();
-     fetchPerformers();
+     const { fetchPickerData } = this.props;
+     fetchPickerData();
    }
 
    onDateChange = (time) => {
@@ -59,7 +57,9 @@ class EventRegistration extends Component {
 
   render() {
     const { name, location, performer, description, time, type, newForm} = this.state;
-    const { success, hasBeenSent, isAuthenticated, eventName, eventDesc } = this.props;
+    const { locations, performers, types, success, hasBeenSent, isAuthenticated, eventName, eventDesc } = this.props;
+    console.log(this.props);
+
     return (
       <View style={style.container}>
         <View style={style.mainTitleContainer}>
@@ -80,22 +80,15 @@ class EventRegistration extends Component {
           <PickerIOS
             selectedValue={location}
             onValueChange={(location) => this.setState({location: location})}>
-            <PickerItemIOS
-                value="Prikið"
-                label="Prikið"
-            />
-            <PickerItemIOS
-                value="Húrra"
-                label="Húrra"
-            />
-            <PickerItemIOS
-                value="Gaukur á stöng"
-                label="Gaukur á stöng"
-            />
-            <PickerItemIOS
-                value="Loft Hostel"
-                label="Loft Hostel"
-            />
+            {locations.data.map(l => {
+              return (
+                <PickerItemIOS
+                  key={l.key}
+                  value={l.value}
+                  label={l.label}
+                />
+              )
+            })}
           </PickerIOS>
         </View>
         <View style={style.inputContainer}>
@@ -103,22 +96,15 @@ class EventRegistration extends Component {
           <PickerIOS
             selectedValue={performer}
             onValueChange={(performer) => this.setState({performer: performer})}>
-            <PickerItemIOS
-                value="Gísli Pálmi"
-                label="Gísli pálmi"
-            />
-            <PickerItemIOS
-                value="Prins Póló"
-                label="Prins Pólo"
-            />
-            <PickerItemIOS
-                value="101 Boys"
-                label="101 Boys"
-            />
-            <PickerItemIOS
-                value="Reykjavíkurdætur"
-                label="Reykjavíkurdætur"
-            />
+            {performers.data.map(p => {
+              return (
+                <PickerItemIOS
+                  key={p.key}
+                  value={p.value}
+                  label={p.label}
+                />
+              )
+            })}
           </PickerIOS>
         </View>
         <View style={style.inputContainer}>
@@ -137,18 +123,15 @@ class EventRegistration extends Component {
           <PickerIOS
             selectedValue={type}
             onValueChange={(type) => this.setState({type: type})}>
-            <PickerItemIOS
-                value="Tónleikar"
-                label="Tónleikar"
-            />
-            <PickerItemIOS
-                value="Uppistand"
-                label="Uppistand"
-            />
-            <PickerItemIOS
-                value="Sýning"
-                label="Sýning"
-            />
+            {types.data.map(t => {
+              return (
+                <PickerItemIOS
+                  key={t.key}
+                  value={t.value}
+                  label={t.label}
+                />
+              )
+            })}
          </PickerIOS>
         </View>
         <View style={style.inputContainer}>
@@ -178,9 +161,9 @@ class EventRegistration extends Component {
 
 function mapStateToProps(state) {
   const { success, hasBeenSent } = state.event.registration;
+  const { locations, performers, types } = state.event.query;
   const { isAuthenticated } = state.userAuth;
   const { eventName, eventLoc, eventPerf, eventDesc } = state.formSave;
-  console.log(state);
   return {
     eventName : eventName,
     eventLoc: eventLoc,
@@ -188,7 +171,10 @@ function mapStateToProps(state) {
     eventDesc: eventDesc,
     isAuthenticated : isAuthenticated,
     success : success,
-    hasBeenSent : hasBeenSent
+    hasBeenSent : hasBeenSent,
+    locations: locations,
+    performers: performers,
+    types: types
   }
 }
 
@@ -196,8 +182,11 @@ function mapDispatchToProps(dispatch) {
   return {
     createEvent: (data) => dispatch(createEvent(data)),
     saveEventForm: (data) => dispatch(saveEventForm(data)),
-    fetchLocations: () => dispatch(fetchLocations()),
-    fetchPerformers: () => dispatch(fetchPerformers())
+    fetchPickerData: () => {
+      dispatch(fetchLocations());
+      dispatch(fetchPerformers());
+      dispatch(fetchTypes());
+    }
   }
 }
 

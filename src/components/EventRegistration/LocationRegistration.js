@@ -94,7 +94,7 @@ class LocationRegistration extends Component {
 }
 
 function mapStateToProps(state) {
-  const { success, hasBeenSent } = state.registration
+  const { success, hasBeenSent } = state.event.registration;
   const { isAuthenticated } = state.userAuth
   const { locationName, locationAddress } = state.formSave
 

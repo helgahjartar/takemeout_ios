@@ -1,25 +1,9 @@
-import { LOGIN_SUCCESS, LOGIN_ERROR, REGISTRATION_ERROR, LOGOUT, LOGIN } from '../actions/userAuthActions';
+import { CREATE_USER, LOGOUT, LOGIN } from '../actions/userAuthActions';
 import { handleActions } from 'redux-actions';
 
 const initialState = {};
 
 export default handleActions({
-
-  LOGIN_SUCCESS (state, action) {
-    return Object.assign({}, state, {
-      isAuthenticated: true,
-      hasBeenSent: true,
-      errorMessage: ''
-    });
-  },
-
-  LOGIN_ERROR (state, action) {
-    return Object.assign({}, state, {
-      errorMessage: 'User unauthenticated',
-      isAuthenticated: false,
-      hasBeenSent: true
-    });
-  },
 
   LOGOUT (state, action) {
     return Object.assign({}, state, {
@@ -29,29 +13,47 @@ export default handleActions({
     });
   },
 
-  REGISTRATION_ERROR (state, action) {
+  [`${CREATE_USER}_PENDING`]: (state, action) => {
     return Object.assign({}, state, {
-      errorMessage: action.errorMessage,
-      registrationError: true
+      isPending: true,
+      errorMessage: null
     });
   },
 
-  [`${LOGIN}_PENDING`]: (state, action) => ({
-    isAuthenticated: false,
-    hasBeenSent: false,
-    errorMessage: ''
-  }),
+  [`${CREATE_USER}_REJECTED`]: (state, action) => {
+    return Object.assign({}, state, {
+      isPending: false,
+      errorMessage: action.payload
+    });
+  },
 
-  [`${LOGIN}_REJECTED`]: (state, action) => ({
-    errorMessage: 'User unauthenticated',
-    isAuthenticated: false,
-    hasBeenSent: true
-  }),
+  [`${CREATE_USER}_FULFILLED`]: (state, action) => {
+    return Object.assign({}, state, {
+      isPending: false,
+      errorMessage: null
+    });
+  },
 
-  [`${LOGIN}_FULFILLED`]: (state, action) => ({
-    isAuthenticated: true,
-    hasBeenSent: true,
-    errorMessage: ''
-  })
+  [`${LOGIN}_PENDING`]: (state, action) => {
+    return Object.assign({}, state, {
+      errorMessage: null
+    });
+  },
+
+  [`${LOGIN}_REJECTED`]: (state, action) => {
+    return Object.assign({}, state, {
+      errorMessage: "foo",
+      isAuthenticated: false,
+      hasBeenSent: true
+    });
+  },
+
+  [`${LOGIN}_FULFILLED`]: (state, action) => {
+    return Object.assign({}, state, {
+      isAuthenticated: true,
+      hasBeenSent: true,
+      errorMessage: null
+    });
+  }
 
 }, initialState);

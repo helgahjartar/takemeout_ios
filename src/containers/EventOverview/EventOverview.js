@@ -32,23 +32,20 @@ class EventOverview extends Component {
   render() {
     const { isPending, errorMsg, events } = this.props;
 
-    let viewBody;
     if (isPending) {
-      viewBody = (
+       return (
         <View>
           <LoadingSymbolOverlay />
         </View>
       )
-    }
-
-    else if(errorMsg) {
-      viewBody = (
+    } else if(errorMsg) {
+      return (
         <ErrorScreen errorMsg={errorMsg} />
       )
     } else {
       const { ds } = this.state;
       dataSource = ds.cloneWithRowsAndSections(events.dataBlob, events.sectionIds, events.rowIds);
-      viewBody =  (
+      return  (
         <ListView
           style={style.container}
           dataSource={dataSource}
@@ -58,14 +55,11 @@ class EventOverview extends Component {
         />
       )
     }
-
-    return viewBody;
   }
 }
 
 function mapStateToProps(state) {
-  const { isPending, errorMsg, eventData } = state.event.overview;
-  console.log(eventData);
+  const { isPending, errorMsg, eventData } = state.event.query.events;
   return {
     isPending : isPending,
     errorMsg : errorMsg,
