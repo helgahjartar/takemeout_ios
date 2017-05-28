@@ -3,7 +3,7 @@ import { Text, ListView, View, TextInput, Button} from 'react-native';
 import { StackNavigator } from 'react-navigation';
 import style from './style';
 import { connect } from 'react-redux'
-import { createLocation, saveLocationForm } from '../../actions/index'
+import { createLocation, saveLocationForm } from '../../actions/eventRegistrationActions';
 import { validateAddress, validateInput, returnLocationFormErrors } from '../Helpers/validators'
 import RadioForm, {RadioButton, RadioButtonInput, RadioButtonLabel} from 'react-native-simple-radio-button';
 
@@ -94,7 +94,7 @@ class LocationRegistration extends Component {
 }
 
 function mapStateToProps(state) {
-  const { success, hasBeenSent } = state.registration
+  const { success, hasBeenSent } = state.event.registration;
   const { isAuthenticated } = state.userAuth
   const { locationName, locationAddress } = state.formSave
 

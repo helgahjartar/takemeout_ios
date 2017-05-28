@@ -3,7 +3,7 @@ import { Text, ListView, View, TextInput, Button} from 'react-native';
 import { StackNavigator } from 'react-navigation';
 import style from './style';
 import { connect } from 'react-redux'
-import { createPerformer, savePerformerForm } from '../../actions/index'
+import { createPerformer, savePerformerForm } from '../../actions/eventRegistrationActions';
 import { validateInput, validateDescription, returnPerformerFormErrors } from '../Helpers/validators'
 
 class PerformerRegistration extends Component {
@@ -39,7 +39,6 @@ class PerformerRegistration extends Component {
    savePerformerForm(this.state);
   }
 
-
   render() {
     const { performer, descriptionIce, descriptionEng, newForm} = this.state;
     const { success, hasBeenSent, isAuthenticated, performerName, performerDescIce, performerDescEng } = this.props;
@@ -51,31 +50,31 @@ class PerformerRegistration extends Component {
         <View style={style.inputContainer}>
           <Text style={style.titleText}>Nafn flytjanda:</Text>
           <TextInput
-          style={style.inputText}
-          value={performer}
-          onChangeText={(performer) => this.setState({ performer })}
+            style={style.inputText}
+            value={performer}
+            onChangeText={(performer) => this.setState({ performer })}
           />
           <Text style={style.helperText}>{validateInput(performer)}</Text>
         </View>
         <View style={style.inputContainer}>
           <Text style={style.titleText}>Lýsing á íslensku:</Text>
           <TextInput
-          style={style.descText}
-          value={descriptionIce}
-          multiline = {true}
-          numberOfLines = {4}
-          onChangeText={(descriptionIce) => this.setState({ descriptionIce })}
+            style={style.descText}
+            value={descriptionIce}
+            multiline = {true}
+            numberOfLines = {4}
+            onChangeText={(descriptionIce) => this.setState({ descriptionIce })}
           />
           <Text style={style.helperText}>{validateDescription(descriptionIce)}</Text>
         </View>
         <View style={style.inputContainer}>
           <Text style={style.titleText}>Lýsing á ensku:</Text>
           <TextInput
-          style={style.descText}
-          value={descriptionEng}
-          multiline = {true}
-          numberOfLines = {4}
-          onChangeText={(descriptionEng) => this.setState({ descriptionEng })}
+            style={style.descText}
+            value={descriptionEng}
+            multiline = {true}
+            numberOfLines = {4}
+            onChangeText={(descriptionEng) => this.setState({ descriptionEng })}
           />
           <Text style={style.helperText}>{validateDescription(descriptionEng)}</Text>
         </View>
@@ -92,7 +91,7 @@ class PerformerRegistration extends Component {
 }
 
 function mapStateToProps(state) {
-  const { success, hasBeenSent } = state.registration
+  const { success, hasBeenSent } = state.event.registration;
   const { isAuthenticated } = state.userAuth
   const { performerName, performerDescIce, performerDescEng } = state.formSave
 

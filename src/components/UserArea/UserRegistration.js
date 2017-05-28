@@ -3,7 +3,7 @@ import { Text, ListView, View, TextInput, Button } from 'react-native';
 import { StackNavigator } from 'react-navigation';
 import style from './style';
 import { connect } from 'react-redux'
-import { createUser } from '../../actions/index'
+import { createUser } from '../../actions/userAuthActions'
 import { validateInput, validateEmail, validatePassword, getValidationState, getEmailValidationState, getPasswordValidationState } from '../Helpers/validators'
 
 class UserRegistration extends Component {
