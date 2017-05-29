@@ -31,6 +31,7 @@ class EventOverview extends Component {
 
   render() {
     const { isPending, errorMsg, events } = this.props;
+    const { navigate } = this.props.navigation;
 
     if (isPending) {
        return (
@@ -49,7 +50,11 @@ class EventOverview extends Component {
         <ListView
           style={style.container}
           dataSource={dataSource}
-          renderRow={(event) => <EventRow event={event} />}
+          renderRow={(event) =>
+            <EventRow
+              event={event}
+              onPress={(id) => navigate('EventDetails', { eventId: id }) }
+            />}
           renderSectionHeader={(date) => <DateRow date={date} />}
           renderSeparator={(sectionId, rowId) => <View key={rowId} style={style.separator} />}
         />

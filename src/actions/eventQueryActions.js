@@ -4,6 +4,20 @@ export const FETCH_EVENTS = 'FETCH_EVENTS';
 export const FETCH_PERFORMERS = 'FETCH_PERFORMERS';
 export const FETCH_LOCATIONS = 'FETCH_LOCATIONS';
 export const FETCH_TYPES = 'FETCH_TYPES';
+export const FETCH_EVENT_DETAILS = 'FETCH_EVENT_DETAILS';
+
+export const fetchEventDetails = (eventId) => ({
+  type: FETCH_EVENT_DETAILS,
+  payload: new Promise((resolve, reject) => {
+    fetch(serviceUrl+'/event/query/details?eventId='+eventId, {
+      method: 'GET',
+      headers: defaultHeader
+    }).then(res => {
+      if (res.ok) resolve(res.json());
+      else reject('Couldn\'t get event details');
+    })
+  })
+});
 
 export const fetchEvents = () => ({
   type: FETCH_EVENTS,

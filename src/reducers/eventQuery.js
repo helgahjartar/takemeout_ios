@@ -1,5 +1,5 @@
 import { handleActions } from 'redux-actions';
-import { FETCH_EVENTS, FETCH_PERFORMERS, FETCH_TYPES, FETCH_LOCATIONS } from '../actions/eventQueryActions';
+import { FETCH_EVENTS, FETCH_PERFORMERS, FETCH_TYPES, FETCH_LOCATIONS, FETCH_EVENT_DETAILS } from '../actions/eventQueryActions';
 
 const initialState = {
   events: {
@@ -25,6 +25,11 @@ const initialState = {
     isPending: false,
     errorMsg: null,
     data: []
+  },
+  eventDetails: {
+    isPending: false,
+    errorMsg: null,
+    data: null
   }
 };
 
@@ -153,6 +158,36 @@ export default handleActions({
         isPending: false,
         errorMsg: null,
         data: formatForPicker(action.payload, (t) => t.id, (t) => t.descriptionIce)
+      }
+    });
+  },
+
+  [`${FETCH_EVENT_DETAILS}_PENDING`]: (state, action) => {
+    return Object.assign({}, state, {
+      eventDetails: {
+        isPending: true,
+        errorMsg: null,
+        data: null
+      }
+    });
+  },
+
+  [`${FETCH_EVENT_DETAILS}_REJECTED`]: (state, action) => {
+    return Object.assign({}, state, {
+      eventDetails: {
+        isPending: false,
+        errorMsg: action.payload,
+        data: null
+      }
+    });
+  },
+
+  [`${FETCH_EVENT_DETAILS}_FULFILLED`]: (state, action) => {
+    return Object.assign({}, state, {
+      eventDetails: {
+        isPending: false,
+        errorMsg: null,
+        data: action.payload
       }
     });
   }
