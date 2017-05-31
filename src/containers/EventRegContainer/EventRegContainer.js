@@ -15,7 +15,6 @@ export default class EventRegContainer extends Component {
   }
 
   render() {
-    const { navigate } = this.props.navigation;
     const { eventForm, locationForm, performerForm } = this.state;
     return (
       <View style={style.container}>

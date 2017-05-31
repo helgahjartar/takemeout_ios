@@ -49,3 +49,17 @@ export const createPerformer = (data) => ({
     })
   })
 });
+
+export const createLocation = (data) => ({
+  type: CREATE_LOCATION,
+  payload: new Promise((resolve, reject) => {
+    fetch(serviceUrl+'/event/registration/location' , {
+      method: 'POST',
+      headers: Object.assign({}, defaultHeader, { 'token' : getToken() }),
+      body: JSON.stringify(data)
+    }).then(res => {
+      if (res.ok) resolve("Location created successfully");
+      else reject("Couldn't create location");
+    })
+  })
+});

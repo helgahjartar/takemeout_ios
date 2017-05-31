@@ -29,15 +29,11 @@ class EventRegistration extends Component {
 
   constructor(props) {
     super(props);
+    const { dispatchFetchPickerData } = props;
     this.handleSubmit = this.handleSubmit.bind(this);
-    const { dispatchFetchPickerData } = this.props;
     dispatchFetchPickerData();
-  }
-
-  componentWillMount() {
-    const { savedFormData } = this.props.registration;
+    const { savedFormData } = props.registration;
     const data = savedFormData ? savedFormData : this.initialFormData();
-
     this.state = {
       formData: data,
       formWasSent: false
@@ -45,7 +41,7 @@ class EventRegistration extends Component {
   }
 
   componentWillUnmount() {
-    const { dispatchSaveEventForm, isPending } = this.props;
+    const { dispatchSaveEventForm } = this.props;
     dispatchSaveEventForm(this.state.formData);
   }
 
@@ -78,11 +74,11 @@ class EventRegistration extends Component {
 
   render() {
     const { formData } = this.state;
-    const { isAuthenticated, timeZoneOffset } = this.props;
+    const { timeZoneOffset } = this.props;
     const { isPending, errorMsg, savedFormData } = this.props.registration;
     const { locations, performers, types } = this.props.query;
 
-    let event = errorMsg && savedFormData ? savedFormData : formData;
+    const event = errorMsg && savedFormData ? savedFormData : formData;
 
     return (
       <View style={style.container}>
@@ -165,9 +161,8 @@ class EventRegistration extends Component {
 function mapStateToProps(state) {
   const { isPending, errorMsg, eventForm } = state.event.registration;
   const { locations, performers, types } = state.event.query;
-  const { isAuthenticated } = state.userAuth;
+
   return {
-    isAuthenticated : isAuthenticated,
     registration: {
       isPending : isPending,
       errorMsg : errorMsg,

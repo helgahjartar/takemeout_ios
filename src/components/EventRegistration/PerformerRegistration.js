@@ -19,6 +19,12 @@ class PerformerRegistration extends Component {
   constructor(props) {
      super(props);
      this.handleSubmit = this.handleSubmit.bind(this);
+     const { savedFormData } = props;
+     const data = savedFormData ? savedFormData : this.initialFormData();
+     this.state = {
+       formData: data,
+       formWasSent: false
+     }
    }
 
    handleSubmit(event) {
@@ -37,18 +43,8 @@ class PerformerRegistration extends Component {
      this.setState({ formData: this.initialFormData() })
   }
 
-  componentWillMount() {
-    const { savedFormData } = this.props;
-    const data = savedFormData ? savedFormData : this.initialFormData();
-    this.state = {
-      formData: data,
-      formWasSent: false
-    }
-  }
-
   componentWillUnmount() {
-    const { dispatchSavePerformerForm, isPending } = this.props;
-    console.log(this.state.formData)
+    const { dispatchSavePerformerForm } = this.props;
     dispatchSavePerformerForm(this.state.formData);
   }
 
@@ -59,7 +55,6 @@ class PerformerRegistration extends Component {
 
   render() {
     const { formData } = this.state;
-    const { isAuthenticated } = this.props;
     const { isPending, errorMsg, savedFormData } = this.props;
 
     const performer = errorMsg && savedFormData ? savedFormData : formData;

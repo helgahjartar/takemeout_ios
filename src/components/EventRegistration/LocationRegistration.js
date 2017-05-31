@@ -4,8 +4,7 @@ import { StackNavigator } from 'react-navigation';
 import style from './style';
 import { connect } from 'react-redux'
 import { createLocation, saveLocationForm } from '../../actions/eventRegistrationActions';
-import { validateAddress, validateInput, returnLocationFormErrors } from '../Helpers/validators'
-import RadioForm, {RadioButton, RadioButtonInput, RadioButtonLabel} from 'react-native-simple-radio-button';
+import { validateAddress, validateInput, validateDescription, returnLocationFormErrors } from '../Helpers/validators'
 
 var radio_props = [
    {label: 'Gott aðgengi', value: 0 },
@@ -15,39 +14,54 @@ var radio_props = [
 
 class LocationRegistration extends Component {
 
+  initialFormData() {
+    return {
+      name: '',
+      address: '',
+      access: ''
+    }
+  }
+
   constructor(props) {
-     super(props);
-     this.state = {newForm: true, location: '', address: '', access: 0};
-     this.handleSubmit = this.handleSubmit.bind(this);
-   }
+    super(props);
+    this.handleSubmit = this.handleSubmit.bind(this);
+    const { savedFormData } = props;
+    const data = savedFormData ? savedFormData : this.initialFormData();
+    this.state = {
+      formData: data,
+      formWasSent: false
+    }
+  }
 
-   handleSubmit(event) {
+  componentWillUnmount() {
+    const { dispatchSaveLocationForm } = this.props;
+    dispatchSaveLocationForm(this.state.formData);
+  }
+
+  handleSubmit(event) {
+   const errors = returnLocationFormErrors(this.state.formData);
+   if (errors.value != null) {
      event.preventDefault();
-     const errors = returnLocationFormErrors(this.state);
-     if (errors.value != null) {
-       event.preventDefault();
-       console.log(errors);
-       alert("Form er vitlaust fyllt út");
-       return;
-     }
-     const { createLocation } = this.props;
-     createLocation(this.state);
-     this.state.newForm = false;
+     console.log(errors);
+     alert("Form er vitlaust fyllt út");
+     return;
+   }
+   const { dispatchCreateLocation } = this.props;
+   dispatchCreateLocation(this.state.formData);
+   this.setState({ formData: this.initialFormData() })
   }
 
-  componentDidMount() {
-    if (this.props.locationName) this.setState({ location : this.props.locationName});
-    if (this.props.locationAddress) this.setState({ address : this.props.locationAddress});
-  }
-
-  componentDidUpdate() {
-   const { saveLocationForm } = this.props;
-   saveLocationForm(this.state);
+  setFormDataState(newState) {
+    const { formData } = this.state;
+    this.setState({ formData: Object.assign({}, formData, newState) });
   }
 
   render() {
-    const { location, access, address, newForm} = this.state;
-    const { success, hasBeenSent, isAuthenticated, locationName, locationAddress } = this.props;
+    const { formData } = this.state;
+    const { isPending, errorMsg, savedFormData } = this.props;
+
+    const location = errorMsg && savedFormData ? savedFormData : formData;
+
     return (
       <View style={style.container}>
         <View style={style.mainTitleContainerLoc}>
@@ -56,30 +70,29 @@ class LocationRegistration extends Component {
         <View style={style.inputContainerLoc}>
           <Text style={style.titleText}>Staðarheiti:</Text>
           <TextInput
-          style={style.inputText}
-          value={location}
-          onChangeText={(location) => this.setState({ location })}
+            style={style.inputText}
+            value={location.name}
+            onChangeText={ (value) => this.setFormDataState({ name: value }) }
           />
-          <Text style={style.helperText}>{validateInput(location)}</Text>
+          <Text style={style.helperText}>{validateInput(location.name)}</Text>
         </View>
         <View style={style.inputContainerLoc}>
           <Text style={style.titleText}>Heimilisfang:</Text>
           <TextInput
-          style={style.inputText}
-          value={address}
-          onChangeText={(address) => this.setState({ address })}
+            style={style.inputText}
+            value={location.address}
+            onChangeText={ (value) => this.setFormDataState({ address: value }) }
           />
-          <Text style={style.helperText}>{validateAddress(address)}</Text>
+          <Text style={style.helperText}>{validateAddress(location.address)}</Text>
         </View>
         <View style={style.inputContainerLoc}>
-          <Text style={style.titleText}>Veldu gæði aðgengis á viðburðarstað:</Text>
-          <RadioForm
-           radio_props={radio_props}
-           initial={0}
-           buttonSize={5}
-           value={access}
-           onPress={(access) => {this.setState({access:access})}}
-         />
+          <Text style={style.titleText}>Aðgengi:</Text>
+          <TextInput
+            style={style.inputText}
+            value={location.access}
+            onChangeText={ (value) => this.setFormDataState({ access: value }) }
+          />
+          <Text style={style.helperText}>{validateInput(location.access)}</Text>
         </View>
         <View style={style.buttonBackgroundLoc}>
           <Button
@@ -94,25 +107,19 @@ class LocationRegistration extends Component {
 }
 
 function mapStateToProps(state) {
-  const { success, hasBeenSent } = state.event.registration;
-  const { isAuthenticated } = state.userAuth
-  const { locationName, locationAddress } = state.formSave
-
-  console.log(state)
+  const { isPending, errorMsg, locationForm } = state.event.registration;
 
   return {
-    isAuthenticated : isAuthenticated,
-    success : success,
-    hasBeenSent : hasBeenSent,
-    locationName : locationName,
-    locationAddress : locationAddress
+    isPending : isPending,
+    errorMsg: errorMsg,
+    savedFormData : locationForm
   }
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    createLocation: (data) => dispatch(createLocation(data)),
-    saveLocationForm: (data) => dispatch(saveLocationForm(data))
+    dispatchCreateLocation: (data) => dispatch(createLocation(data)),
+    dispatchSaveLocationForm: (data) => dispatch(saveLocationForm(data))
   }
 }
 
