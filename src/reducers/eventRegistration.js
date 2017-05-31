@@ -6,7 +6,7 @@ const initialState = {
   errorMsg: null,
   eventForm: null,
   locationForm: null,
-  performerFrom: null
+  performerForm: null
 };
 
 export default handleActions({

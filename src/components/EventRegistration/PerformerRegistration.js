@@ -8,40 +8,62 @@ import { validateInput, validateDescription, returnPerformerFormErrors } from '.
 
 class PerformerRegistration extends Component {
 
+  initialFormData() {
+    return {
+      name: '',
+      descriptionIce: '',
+      descriptionEng: ''
+    }
+  }
+
   constructor(props) {
      super(props);
-     this.state = {newForm: true, performer: '', descriptionIce: '', descriptionEng: ''};
      this.handleSubmit = this.handleSubmit.bind(this);
    }
 
    handleSubmit(event) {
      event.preventDefault();
-     const errors = returnPerformerFormErrors(this.state);
-     const { createPerformer } = this.props;
+     const errors = returnPerformerFormErrors(this.state.formData);
      if (errors.value != null) {
        event.preventDefault();
        console.log(errors);
        alert("Form er vitlaust fyllt út");
        return;
      }
-     createPerformer(this.state);
-     this.state.newForm = false;
+     const { formData } = this.state;
+     const { dispatchCreatePerformer } = this.props;
+
+     dispatchCreatePerformer(formData);
+     this.setState({ formData: this.initialFormData() })
   }
 
-  componentDidMount() {
-    if (this.props.performerName) this.setState({ performer : this.props.performerName});
-    if (this.props.performerDescIce) this.setState({ descriptionIce : this.props.performerDescIce});
-    if (this.props.performerDescEng) this.setState({ descriptionEng : this.props.performerDescEng});
+  componentWillMount() {
+    const { savedFormData } = this.props;
+    const data = savedFormData ? savedFormData : this.initialFormData();
+    this.state = {
+      formData: data,
+      formWasSent: false
+    }
   }
 
-  componentDidUpdate() {
-   const { savePerformerForm } = this.props;
-   savePerformerForm(this.state);
+  componentWillUnmount() {
+    const { dispatchSavePerformerForm, isPending } = this.props;
+    console.log(this.state.formData)
+    dispatchSavePerformerForm(this.state.formData);
+  }
+
+  setFormDataState(newState) {
+    const { formData } = this.state;
+    this.setState({ formData: Object.assign({}, formData, newState) });
   }
 
   render() {
-    const { performer, descriptionIce, descriptionEng, newForm} = this.state;
-    const { success, hasBeenSent, isAuthenticated, performerName, performerDescIce, performerDescEng } = this.props;
+    const { formData } = this.state;
+    const { isAuthenticated } = this.props;
+    const { isPending, errorMsg, savedFormData } = this.props;
+
+    const performer = errorMsg && savedFormData ? savedFormData : formData;
+
     return (
       <View style={style.container}>
         <View style={style.mainTitleContainerPer}>
@@ -51,32 +73,32 @@ class PerformerRegistration extends Component {
           <Text style={style.titleText}>Nafn flytjanda:</Text>
           <TextInput
             style={style.inputText}
-            value={performer}
-            onChangeText={(performer) => this.setState({ performer })}
+            value={performer.name}
+            onChangeText={(value) => this.setFormDataState({ name: value })}
           />
-          <Text style={style.helperText}>{validateInput(performer)}</Text>
+          <Text style={style.helperText}>{validateInput(performer.name)}</Text>
         </View>
         <View style={style.inputContainer}>
           <Text style={style.titleText}>Lýsing á íslensku:</Text>
           <TextInput
             style={style.descText}
-            value={descriptionIce}
+            value={performer.descriptionIce}
             multiline = {true}
             numberOfLines = {4}
-            onChangeText={(descriptionIce) => this.setState({ descriptionIce })}
+            onChangeText={(value) => this.setFormDataState({ descriptionIce: value })}
           />
-          <Text style={style.helperText}>{validateDescription(descriptionIce)}</Text>
+          <Text style={style.helperText}>{validateDescription(performer.descriptionIce)}</Text>
         </View>
         <View style={style.inputContainer}>
           <Text style={style.titleText}>Lýsing á ensku:</Text>
           <TextInput
             style={style.descText}
-            value={descriptionEng}
+            value={performer.descriptionEng}
             multiline = {true}
             numberOfLines = {4}
-            onChangeText={(descriptionEng) => this.setState({ descriptionEng })}
+            onChangeText={(value) => this.setFormDataState({ descriptionEng: value })}
           />
-          <Text style={style.helperText}>{validateDescription(descriptionEng)}</Text>
+          <Text style={style.helperText}>{validateDescription(performer.descriptionEng)}</Text>
         </View>
         <View style={style.buttonBackgroundPer}>
           <Button
@@ -91,26 +113,21 @@ class PerformerRegistration extends Component {
 }
 
 function mapStateToProps(state) {
-  const { success, hasBeenSent } = state.event.registration;
-  const { isAuthenticated } = state.userAuth
-  const { performerName, performerDescIce, performerDescEng } = state.formSave
+  const { isPending, errorMsg, performerForm } = state.event.registration;
 
   console.log(state)
 
   return {
-    isAuthenticated : isAuthenticated,
-    success : success,
-    hasBeenSent : hasBeenSent,
-    performerName : performerName,
-    performerDescIce : performerDescIce,
-    performerDescEng : performerDescEng
+    isPending : isPending,
+    errorMsg : errorMsg,
+    savedFormData: performerForm
   }
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    createPerformer: (data) => dispatch(createPerformer(data)),
-    savePerformerForm: (data) => dispatch(savePerformerForm(data))
+    dispatchCreatePerformer: (data) => dispatch(createPerformer(data)),
+    dispatchSavePerformerForm: (data) => dispatch(savePerformerForm(data)),
   }
 }
 

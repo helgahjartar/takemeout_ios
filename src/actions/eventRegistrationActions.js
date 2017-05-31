@@ -35,3 +35,17 @@ export const createEvent = (data) => ({
     })
   })
 });
+
+export const createPerformer = (data) => ({
+  type: CREATE_PERFORMER,
+  payload: new Promise((resolve, reject) => {
+    fetch(serviceUrl+'/event/registration/performer' , {
+      method: 'POST',
+      headers: Object.assign({}, defaultHeader, { 'token' : getToken() }),
+      body: JSON.stringify(data)
+    }).then(res => {
+      if (res.ok) resolve("Performer created successfully");
+      else reject("Couldn't create performer");
+    })
+  })
+});
