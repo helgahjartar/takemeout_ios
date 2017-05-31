@@ -71,6 +71,8 @@ class PerformerRegistration extends Component {
           <TextInput
             style={style.inputText}
             value={performer.name}
+            autoCapitalize='none'
+            autoCorrect={false}
             onChangeText={(value) => this.setFormDataState({ name: value })}
           />
           <Text style={style.helperText}>{validateInput(performer.name)}</Text>
@@ -82,6 +84,8 @@ class PerformerRegistration extends Component {
             value={performer.descriptionIce}
             multiline = {true}
             numberOfLines = {4}
+            autoCapitalize='none'
+            autoCorrect={false}
             onChangeText={(value) => this.setFormDataState({ descriptionIce: value })}
           />
           <Text style={style.helperText}>{validateDescription(performer.descriptionIce)}</Text>
@@ -93,6 +97,8 @@ class PerformerRegistration extends Component {
             value={performer.descriptionEng}
             multiline = {true}
             numberOfLines = {4}
+            autoCapitalize='none'
+            autoCorrect={false}
             onChangeText={(value) => this.setFormDataState({ descriptionEng: value })}
           />
           <Text style={style.helperText}>{validateDescription(performer.descriptionEng)}</Text>

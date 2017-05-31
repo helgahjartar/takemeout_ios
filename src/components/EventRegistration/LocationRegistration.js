@@ -74,6 +74,8 @@ class LocationRegistration extends Component {
           <TextInput
             style={style.inputText}
             value={location.name}
+            autoCapitalize='none'
+            autoCorrect={false}
             onChangeText={ (value) => this.setFormDataState({ name: value }) }
           />
           <Text style={style.helperText}>{validateInput(location.name)}</Text>
@@ -83,6 +85,8 @@ class LocationRegistration extends Component {
           <TextInput
             style={style.inputText}
             value={location.address}
+            autoCapitalize='none'
+            autoCorrect={false}
             onChangeText={ (value) => this.setFormDataState({ address: value }) }
           />
           <Text style={style.helperText}>{validateAddress(location.address)}</Text>
@@ -92,6 +96,8 @@ class LocationRegistration extends Component {
           <TextInput
             style={style.inputText}
             value={location.access}
+            autoCapitalize='none'
+            autoCorrect={false}
             onChangeText={ (value) => this.setFormDataState({ access: value }) }
           />
           <Text style={style.helperText}>{validateInput(location.access)}</Text>

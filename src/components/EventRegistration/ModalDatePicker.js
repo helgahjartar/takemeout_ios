@@ -3,20 +3,32 @@ import { Modal, Text, View, DatePickerIOS, Button } from 'react-native';
 import style from './style';
 
 export default class ModalDatePicker extends Component {
+  static defaultProps = {
+    placeholder: 'Veldu úr listanum'
+  };
+
   constructor(props) {
      super(props);
-     this.state = { defaultPlaceholder: 'Veldu dagsetningu og tíma', visible: false };
+     this.state = { visible: false };
    }
 
-  componentDidMount() {
-    if (this.props.placeholder) this.setState({ placeholder : this.props.placeholder});
-  }
+   formatDate(time) {
+     minutes = time.getMinutes() < 10 ? '0' + time.getMinutes() : time.getMinutes();
+     clock = time.getHours() + ':' + minutes;
+     date = time.getDate() + '.' + (time.getMonth()+1) + '.' + time.getFullYear();
+     return date + ' - ' + clock;
+   }
+
+   getTextControlValue(date) {
+     if (!date) return this.props.placeholder;
+     let formatted = this.formatDate(date);
+     return formatted;
+   }
 
   render() {
     const { placeholder, timeZoneOffset, mode, time, onDateChange } = this.props;
-    const { defaultPlaceholder } = this.state;
-    let placeText = placeholder ? placeholder : defaultPlaceholder;
-    let textControlValue = time ? time.toISOString() : placeText;
+
+    let textControlValue = this.getTextControlValue(time);
     return(
       <View>
         <Modal transparent={false} visible={this.state.visible}>

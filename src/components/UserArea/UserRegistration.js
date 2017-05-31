@@ -34,6 +34,8 @@ class UserRegistration extends Component {
           style={style.inputText}
           placeholder="Sláðu inn notendanafn"
           value={userName}
+          autoCapitalize='none'
+          autoCorrect={false}
           onChangeText={(userName) => this.setState({ userName })}
           />
           <Text style={style.helperText}>{validateInput(userName)}</Text>
@@ -44,6 +46,8 @@ class UserRegistration extends Component {
           style={style.inputText}
           placeholder="Sláðu inn tölvupóst"
           value={email}
+          autoCapitalize='none'
+          autoCorrect={false}
           onChangeText={(email) => this.setState({ email })}
           />
           <Text style={style.helperText}>{validateEmail(email)}</Text>

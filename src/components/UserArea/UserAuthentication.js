@@ -62,6 +62,8 @@ class UserAuthentication extends Component {
           style={style.inputText}
           placeholder="Notendanafn"
           value={userName}
+          autoCapitalize='none'
+          autoCorrect={false}
           onChangeText={(userName) => this.setState({ userName })}
           />
         </View>
@@ -85,6 +87,7 @@ class UserAuthentication extends Component {
                 color='#FFFFFF'
                 title='Innskrá'
                 onPress={this.handleSubmit}
+                autoCo
               />
             </View>
             <View style={style.button}>

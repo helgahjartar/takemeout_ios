@@ -93,6 +93,8 @@ class EventRegistration extends Component {
           <TextInput
             style={style.inputText}
             value={event.name}
+            autoCapitalize='none'
+            autoCorrect={false}
             onChangeText={ (value) => this.setFormDataState({ name: value }) }
           />
           <Text style={style.helperText}>{validateTitle(event.name)}</Text>
@@ -141,6 +143,8 @@ class EventRegistration extends Component {
             value={event.descriptionIce}
             multiline = {true}
             numberOfLines = {4}
+            autoCapitalize='none'
+            autoCorrect={false}
             onChangeText={(value) => this.setFormDataState({ descriptionIce: value, descriptionEng: value }) }
           />
           <Text style={style.helperText}>{validateDescription(event.descriptionEng)}</Text>
