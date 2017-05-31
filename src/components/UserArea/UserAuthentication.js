@@ -105,8 +105,6 @@ class UserAuthentication extends Component {
 function mapStateToProps(state) {
   const { isAuthenticated, hasBeenSent } = state.userAuth
 
-  console.log(state)
-
   return {
     isAuthenticated : isAuthenticated,
     hasBeenSent : hasBeenSent

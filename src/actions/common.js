@@ -2,7 +2,6 @@ let user_token;
 
 export const setToken = (token) => {
   user_token = token._65;
-  console.log(token._65);
 }
 
 export const getToken = () => { return user_token; }

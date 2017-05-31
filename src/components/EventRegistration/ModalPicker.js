@@ -5,25 +5,31 @@ import style from './style';
 let PickerItemIOS = PickerIOS.Item;
 
 export default class ModalPicker extends Component {
+  static defaultProps = {
+    placeholder: 'Veldu úr listanum'
+  };
+
   constructor(props) {
      super(props);
-     this.state = { defaultPlaceholder: 'Veldu úr listanum', visible: false};
+     this.state = { visible: false};
    }
 
-  componentDidMount() {
-    if (this.props.placeholder) this.setState({ placeholder : this.props.placeholder});
+  isNullOrEmpty(objWithLength) {
+    if (!objWithLength) return true;
+    if (objWithLength.length == 0) return true;
+    return false;
   }
 
-  getLabel(items, selectedValue) {
+  getTextControlValue(items, selectedValue) {
+    if (this.isNullOrEmpty(items) || !selectedValue) return this.props.placeholder;
     let item = items.find(item => item.value === selectedValue);
     return item.label;
   }
 
   render() {
-    const { items, placeholder, selectedValue, onValueChange } = this.props;
-    const { defaultPlaceholder } = this.state;
-    let placeText = placeholder ? placeholder : defaultPlaceholder;
-    let textControlValue = selectedValue ? this.getLabel(items, selectedValue) : placeText;
+    const { items, selectedValue, onValueChange } = this.props;
+
+    let textControlValue = this.getTextControlValue(items, selectedValue);
     return(
       <View>
         <Modal transparent={false} visible={this.state.visible}>

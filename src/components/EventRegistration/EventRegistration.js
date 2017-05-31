@@ -10,66 +10,79 @@ import { createEvent, saveEventForm } from '../../actions/eventRegistrationActio
 import { validateInput, validateTitle, validateDescription, returnFormErrors, validateDateInput } from '../Helpers/validators';
 
 class EventRegistration extends Component {
+
   static defaultProps = {
-    time: new Date(),
-    timeOffset: (-1) * (new Date()).getTimezoneOffset(),
+    timeZoneOffset: (-1) * (new Date()).getTimezoneOffset(),
   };
+
+  initialFormData() {
+    return {
+      name: '',
+      descriptionEng: '',
+      descriptionIce: '',
+      time: this.getDateTime(),
+      locationId: null,
+      performerId: null,
+      typeId: null
+    }
+  }
 
   constructor(props) {
     super(props);
-    this.state = {
-      newForm: true,
-      name: null,
-      description: null,
-      selectedPerformer : null,
-      selectedLocation: null,
-      selectedType: null,
-      time: this.props.time,
-      timeZoneOffset: this.props.timeOffset
-    };
     this.handleSubmit = this.handleSubmit.bind(this);
-    const { fetchPickerData } = this.props;
-    fetchPickerData();
+    const { dispatchFetchPickerData } = this.props;
+    dispatchFetchPickerData();
   }
 
-   handleSubmit(event) {
-     const errors = returnFormErrors(this.state);
+  componentWillMount() {
+    const { savedFormData } = this.props.registration;
+    const data = savedFormData ? savedFormData : this.initialFormData();
 
-     if (errors.value != null) {
-       event.preventDefault();
-       console.log(errors);
-       alert("Form er vitlaust fyllt út");
-       return;
-     }
-     const { createEvent } = this.props;
-
-     createEvent({
-       name: this.state.name,
-       descriptionEng: this.state.description,
-       descriptionIce: this.state.description,
-       time: this.state.time.toISOString(),
-       typeId: this.state.selectedType,
-       locationId: this.state.selectedLocation,
-       performerIds: [ this.state.selectedPerformer ]
-     });
-     this.state.newForm = false;
+    this.state = {
+      formData: data,
+      formWasSent: false
+    }
   }
 
-  componentDidMount() {
-    if (this.props.eventName) this.setState({ name : this.props.eventName});
-    if (this.props.eventDesc) this.setState({ description: this.props.eventDesc});
+  componentWillUnmount() {
+    const { dispatchSaveEventForm, isPending } = this.props;
+    dispatchSaveEventForm(this.state.formData);
   }
 
- componentDidUpdate() {
-   const { saveEventForm } = this.props;
-   saveEventForm(this.state);
+  getDateTime() {
+    let datetime = new Date();
+    datetime.setMinutes(0)
+    datetime.setSeconds(0, 0);
+    return datetime;
   }
 
+  setFormDataState(newState) {
+    const { formData } = this.state;
+    this.setState({ formData: Object.assign({}, formData, newState) });
+  }
+
+  handleSubmit(event) {
+    const errors = returnFormErrors(this.state.formData);
+    if (errors.value != null) {
+      event.preventDefault();
+      alert("Form er vitlaust fyllt út");
+      return;
+    }
+    let { performerId, ...formData } = this.state.formData;
+    let data =  Object.assign({}, formData, { performerIds: [ performerId ] });
+
+    const { dispatchCreateEvent } = this.props;
+    dispatchCreateEvent(data);
+    this.setState({ formData: this.initialFormData() })
+  }
 
   render() {
-    const { name, selectedLocation, selectedPerformer, selectedType, description, time, newForm} = this.state;
-    const { locations, performers, types, success, hasBeenSent, isAuthenticated, eventName, eventDesc } = this.props;
-    console.log(this.props);
+    const { formData } = this.state;
+    const { isAuthenticated, timeZoneOffset } = this.props;
+    const { isPending, errorMsg, savedFormData } = this.props.registration;
+    const { locations, performers, types } = this.props.query;
+
+    let event = errorMsg && savedFormData ? savedFormData : formData;
 
     return (
       <View style={style.container}>
@@ -81,18 +94,18 @@ class EventRegistration extends Component {
           <Text style={style.titleText}>Skráðu titil viðburðar:</Text>
           <TextInput
             style={style.inputText}
-            value={name}
-            onChangeText={(name) => this.setState({ name })}
+            value={event.name}
+            onChangeText={ (value) => this.setFormDataState({ name: value }) }
           />
-          <Text style={style.helperText}>{validateTitle(name)}</Text>
+          <Text style={style.helperText}>{validateTitle(event.name)}</Text>
         </View>
         <View style={style.inputContainer}>
           <Text style={style.titleText}>Veldu staðsetningu eða skráðu nýja:</Text>
           <ModalPicker
             placeholder={'Veldu Staðsetningu'}
             items={locations.data}
-            selectedValue={selectedLocation}
-            onValueChange={(value) => this.setState({ selectedLocation: value })}
+            selectedValue={event.locationId}
+            onValueChange={ (value) => this.setFormDataState({ locationId: value }) }
             />
         </View>
         <View style={style.inputContainer}>
@@ -100,45 +113,46 @@ class EventRegistration extends Component {
           <ModalPicker
             placeholder={'Veldu Flytjanda'}
             items={performers.data}
-            selectedValue={selectedPerformer}
-            onValueChange={(value) => this.setState({ selectedPerformer: value })}
+            selectedValue={event.performerId}
+            onValueChange={ (value) => this.setFormDataState({ performerId: value }) }
           />
         </View>
         <View style={style.inputContainer}>
           <Text style={style.titleText}>Veldu dagsetning og tíma viðburðar:</Text>
             <ModalDatePicker
-              time={this.state.time}
+              time={event.time}
               timeOffset={this.state.timeZoneOffset}
               mode='datetime'
-              onDateChange={(value) => this.setState({ time: value })}
+              onDateChange={ (value) => this.setFormDataState({ time: value }) }
             />
-            <Text style={style.helperText}>{validateDateInput(time.toISOString())}</Text>
+            <Text style={style.helperText}>{validateDateInput(event.time.toISOString())}</Text>
         </View>
         <View style={style.inputContainer}>
           <Text style={style.titleText}>Veldu Tegund Viðburðar:</Text>
           <ModalPicker
             placeholder={'Veldu Tegund Viðburðar'}
             items={types.data}
-            selectedValue={selectedType}
-            onValueChange={(value) => this.setState({ selectedType: value })}
+            selectedValue={event.typeId}
+            onValueChange={ (value) => this.setFormDataState({ typeId: value }) }
           />
         </View>
         <View style={style.inputContainer}>
           <Text style={style.titleText}>Skráðu lýsingu sem birtist með viðburði:</Text>
           <TextInput
             style={style.descText}
-            value={description}
+            value={event.descriptionIce}
             multiline = {true}
             numberOfLines = {4}
-            onChangeText={(description) => this.setState({ description })}
+            onChangeText={(value) => this.setFormDataState({ descriptionIce: value, descriptionEng: value }) }
           />
-          <Text style={style.helperText}>{validateDescription(description)}</Text>
-          {!success && hasBeenSent && <Text style={style.helperText}>Ekki tókst að skrá viðburð - vinsamlegast reyndu aftur</Text>}
+          <Text style={style.helperText}>{validateDescription(event.descriptionEng)}</Text>
+          {errorMsg && <Text style={style.helperText}>Ekki tókst að skrá viðburð - vinsamlegast reyndu aftur</Text>}
         </View>
         <View style={style.buttonBackground}>
           <Button
             color='#FFFFFF'
             title='Skrá viðburð'
+            disable={isPending}
             onPress={this.handleSubmit}
           />
         </View>
@@ -149,29 +163,29 @@ class EventRegistration extends Component {
 }
 
 function mapStateToProps(state) {
-  const { success, hasBeenSent } = state.event.registration;
+  const { isPending, errorMsg, eventForm } = state.event.registration;
   const { locations, performers, types } = state.event.query;
   const { isAuthenticated } = state.userAuth;
-  const { eventName, eventLoc, eventPerf, eventDesc } = state.formSave;
   return {
-    eventName : eventName,
-    eventLoc: eventLoc,
-    eventPerf: eventPerf,
-    eventDesc: eventDesc,
     isAuthenticated : isAuthenticated,
-    success : success,
-    hasBeenSent : hasBeenSent,
-    locations: locations,
-    performers: performers,
-    types: types
+    registration: {
+      isPending : isPending,
+      errorMsg : errorMsg,
+      savedFormData: eventForm
+    },
+    query: {
+      locations: locations,
+      performers: performers,
+      types: types
+    }
   }
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    createEvent: (data) => dispatch(createEvent(data)),
-    saveEventForm: (data) => dispatch(saveEventForm(data)),
-    fetchPickerData: () => {
+    dispatchCreateEvent: (data) => dispatch(createEvent(data)),
+    dispatchSaveEventForm: (data) => dispatch(saveEventForm(data)),
+    dispatchFetchPickerData: () => {
       dispatch(fetchLocations());
       dispatch(fetchPerformers());
       dispatch(fetchTypes());

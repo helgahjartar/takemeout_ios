@@ -14,7 +14,6 @@ export const createUser = (userData) => {
         headers: defaultHeader,
         body: JSON.stringify(userData)
       }).then(res => {
-        console.log(res)
         if (res.ok) {
           dispatch(NavigationActions.navigate({ routeName: 'UserAuthentication' }));
           resolve('User created');

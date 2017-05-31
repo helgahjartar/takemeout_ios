@@ -9,21 +9,17 @@ export const CREATE_LOCATION = 'CREATE_LOCATION';
 
 export const saveEventForm = (data) => ({
   type: SAVE_EVENT_FORM,
-  eventName: data.name,
-  eventDesc: data.description
+  formData: data
 })
 
 export const savePerformerForm = (data) => ({
   type: SAVE_PERFORMER_FORM,
-  performerName: data.performer,
-  performerDescIce: data.descriptionIce,
-  performerDescEng: data.descriptionEng
+  formData: data
 })
 
 export const saveLocationForm = (data) => ({
   type: SAVE_LOCATION_FORM,
-  locationName: data.location,
-  locationAddress: data.address
+  formData: data
 })
 
 export const createEvent = (data) => ({

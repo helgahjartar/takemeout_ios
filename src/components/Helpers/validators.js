@@ -57,7 +57,7 @@ export function getPasswordValidationState(newValue, value) {
 
 export function returnFormErrors(data) {
   const errors = {};
-    if (data && data.name.length < 3 || data.description.length < 10 || validateDateInput(data.time.toISOString()) != null) {
+    if (data && data.name.length < 3 || data.descriptionIce.length < 10 || validateDateInput(data.time.toISOString()) != null) {
       errors.value = 'Error in form!'
     } else {
       errors.value = null;
@@ -68,7 +68,7 @@ export function returnFormErrors(data) {
 
 export function returnPerformerFormErrors(data) {
   const errors = {};
-    if (data && data.performer.length < 5 || data.descriptionIce.length < 10 || data.descriptionEng.length < 10) {
+    if (data && data.performerId <= 0 || data.descriptionIce.length < 10 || data.descriptionEng.length < 10) {
       errors.value = 'Error in form!'
     } else {
       errors.value = null;
@@ -79,7 +79,7 @@ export function returnPerformerFormErrors(data) {
 export function returnLocationFormErrors(data) {
   const errors = {};
   var re = /^[A-Za-zÁÉÍÓÚÆÐáéíóúæð]+\s\d+/;
-  if (data && data.location == null || data.location < 5 || data.address < 4 || !re.test(data.address)) {
+  if (data && data.locationId == null || data.locationId <= 0 || data.address < 4 || !re.test(data.address)) {
     errors.value = 'Errors in form!'
   } else {
     errors.value = null;
