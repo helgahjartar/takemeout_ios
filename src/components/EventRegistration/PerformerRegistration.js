@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import { Text, ListView, View, TextInput, Button} from 'react-native';
+import { Alert, Text, ListView, View, TextInput, Button} from 'react-native';
 import { StackNavigator } from 'react-navigation';
 import style from './style';
 import { connect } from 'react-redux'
-import { createPerformer, savePerformerForm } from '../../actions/eventRegistrationActions';
+import { createPerformer, savePerformerForm, resetSuccess } from '../../actions/eventRegistrationActions';
 import { validateInput, validateDescription, returnPerformerFormErrors } from '../Helpers/validators'
 
 class PerformerRegistration extends Component {
@@ -55,9 +55,11 @@ class PerformerRegistration extends Component {
 
   render() {
     const { formData } = this.state;
-    const { isPending, errorMsg, savedFormData } = this.props;
+    const { isPending, errorMsg, success, savedFormData, dispatchResetSuccess } = this.props;
 
     const performer = errorMsg && savedFormData ? savedFormData : formData;
+    if (success)
+      Alert.alert( 'Skráning Tóks', 'Flytjandi var skráður', [ { text: 'OK', onPress: () => dispatchResetSuccess() } ] );
 
     return (
       <View style={style.container}>
@@ -108,11 +110,12 @@ class PerformerRegistration extends Component {
 }
 
 function mapStateToProps(state) {
-  const { isPending, errorMsg, performerForm } = state.event.registration;
+  const { isPending, errorMsg, success, performerForm } = state.event.registration;
 
   console.log(state)
 
   return {
+    success : success,
     isPending : isPending,
     errorMsg : errorMsg,
     savedFormData: performerForm
@@ -123,6 +126,7 @@ function mapDispatchToProps(dispatch) {
   return {
     dispatchCreatePerformer: (data) => dispatch(createPerformer(data)),
     dispatchSavePerformerForm: (data) => dispatch(savePerformerForm(data)),
+    dispatchResetSuccess: () => dispatch(resetSuccess()),
   }
 }
 

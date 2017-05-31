@@ -1,9 +1,11 @@
 import { handleActions } from 'redux-actions';
-import { CREATE_EVENT, CREATE_LOCATION, CREATE_PERFORMER, SAVE_EVENT_FORM, SAVE_PERFORMER_FORM, SAVE_LOCATION_FORM } from '../actions/eventRegistrationActions';
+import { CREATE_EVENT, CREATE_LOCATION, CREATE_PERFORMER, RESET_SUCCESS,
+         SAVE_EVENT_FORM, SAVE_PERFORMER_FORM, SAVE_LOCATION_FORM } from '../actions/eventRegistrationActions';
 
 const initialState = {
   isPending: false,
   errorMsg: null,
+  success: false,
   eventForm: null,
   locationForm: null,
   performerForm: null
@@ -28,6 +30,13 @@ export default handleActions({
     });
   },
 
+  RESET_SUCCESS (state, action) {
+    console.log('\n\n Success REEEEEESEEEEET')
+    return Object.assign({}, state, {
+      success: false
+    });
+  },
+
   [`${CREATE_EVENT}_PENDING`]: (state, action) => {
     return Object.assign({}, state, {
       isPending: true,
@@ -46,7 +55,8 @@ export default handleActions({
     return Object.assign({}, state, {
       isPending: false,
       errorMsg: null,
-      eventForm: null
+      eventForm: null,
+      success: true
     });
   },
 
@@ -68,7 +78,8 @@ export default handleActions({
     return Object.assign({}, state, {
       isPending: false,
       errorMsg: null,
-      locationForm: null
+      locationForm: null,
+      success: true
     });
 
   },[`${CREATE_PERFORMER}_PENDING`]: (state, action) => {
@@ -89,7 +100,8 @@ export default handleActions({
     return Object.assign({}, state, {
       isPending: false,
       errorMsg: null,
-      performerForm: null
+      performerForm: null,
+      success: true
     });
   },
 

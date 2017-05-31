@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
-import { Text, View, TextInput, Button, ScrollView } from 'react-native';
+import { Alert, Text, View, TextInput, Button, ScrollView } from 'react-native';
 import { StackNavigator } from 'react-navigation';
 import style from './style';
 import ModalPicker from './ModalPicker';
 import ModalDatePicker from './ModalDatePicker';
 import { connect } from 'react-redux';
 import { fetchLocations, fetchPerformers, fetchTypes } from '../../actions/eventQueryActions';
-import { createEvent, saveEventForm } from '../../actions/eventRegistrationActions';
+import { createEvent, saveEventForm, resetSuccess } from '../../actions/eventRegistrationActions';
 import { validateInput, validateTitle, validateDescription, returnFormErrors, validateDateInput } from '../Helpers/validators';
 
 class EventRegistration extends Component {
@@ -74,11 +74,13 @@ class EventRegistration extends Component {
 
   render() {
     const { formData } = this.state;
-    const { timeZoneOffset } = this.props;
-    const { isPending, errorMsg, savedFormData } = this.props.registration;
+    const { timeZoneOffset, dispatchResetSuccess } = this.props;
+    const { isPending, errorMsg, success, savedFormData } = this.props.registration;
     const { locations, performers, types } = this.props.query;
 
     const event = errorMsg && savedFormData ? savedFormData : formData;
+    if (success)
+      Alert.alert( 'Skráning Tóks', 'Viðburður var skráður', [ { text: 'OK', onPress: () => dispatchResetSuccess() } ] );
 
     return (
       <View style={style.container}>
@@ -159,11 +161,12 @@ class EventRegistration extends Component {
 }
 
 function mapStateToProps(state) {
-  const { isPending, errorMsg, eventForm } = state.event.registration;
+  const { isPending, errorMsg, success, eventForm } = state.event.registration;
   const { locations, performers, types } = state.event.query;
 
   return {
     registration: {
+      success : success,
       isPending : isPending,
       errorMsg : errorMsg,
       savedFormData: eventForm
@@ -180,6 +183,7 @@ function mapDispatchToProps(dispatch) {
   return {
     dispatchCreateEvent: (data) => dispatch(createEvent(data)),
     dispatchSaveEventForm: (data) => dispatch(saveEventForm(data)),
+    dispatchResetSuccess: () => dispatch(resetSuccess()),
     dispatchFetchPickerData: () => {
       dispatch(fetchLocations());
       dispatch(fetchPerformers());

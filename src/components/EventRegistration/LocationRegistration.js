@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import { Text, ListView, View, TextInput, Button} from 'react-native';
+import { Alert, Text, ListView, View, TextInput, Button} from 'react-native';
 import { StackNavigator } from 'react-navigation';
 import style from './style';
 import { connect } from 'react-redux'
-import { createLocation, saveLocationForm } from '../../actions/eventRegistrationActions';
+import { createLocation, saveLocationForm, resetSuccess } from '../../actions/eventRegistrationActions';
 import { validateAddress, validateInput, validateDescription, returnLocationFormErrors } from '../Helpers/validators'
 
 var radio_props = [
@@ -58,9 +58,11 @@ class LocationRegistration extends Component {
 
   render() {
     const { formData } = this.state;
-    const { isPending, errorMsg, savedFormData } = this.props;
+    const { isPending, errorMsg, success, savedFormData, dispatchResetSuccess } = this.props;
 
     const location = errorMsg && savedFormData ? savedFormData : formData;
+    if (success)
+      Alert.alert( 'Skráning Tóks', 'Staðsetning var skráð', [ { text: 'OK', onPress: () => dispatchResetSuccess() } ] );
 
     return (
       <View style={style.container}>
@@ -107,9 +109,10 @@ class LocationRegistration extends Component {
 }
 
 function mapStateToProps(state) {
-  const { isPending, errorMsg, locationForm } = state.event.registration;
+  const { isPending, errorMsg, success, locationForm } = state.event.registration;
 
   return {
+    success : success,
     isPending : isPending,
     errorMsg: errorMsg,
     savedFormData : locationForm
@@ -119,7 +122,8 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return {
     dispatchCreateLocation: (data) => dispatch(createLocation(data)),
-    dispatchSaveLocationForm: (data) => dispatch(saveLocationForm(data))
+    dispatchSaveLocationForm: (data) => dispatch(saveLocationForm(data)),
+    dispatchResetSuccess: () => dispatch(resetSuccess()),
   }
 }
 
