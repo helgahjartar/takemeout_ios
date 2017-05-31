@@ -1,7 +1,7 @@
 import { fetchEventDetails } from '../../actions/eventQueryActions'
 import React, { Component } from 'react';
 import { StackNavigator } from 'react-navigation';
-import { Text, View } from 'react-native';
+import { Text, View, Image } from 'react-native';
 import { connect } from 'react-redux'
 import style from './style'
 
@@ -15,15 +15,22 @@ class EventDetails extends Component {
   render() {
     const { event, isPending, errorMsg } = this.props;
     return (
-      <View>
+      <View style={style.container}>
         {event &&
-          <View>
-            <Text>{event.name}</Text>
-            <Text>{event.descriptionIce}</Text>
+          <View style={style.titleContainer}>
+            <Text style={style.title}>{event.name}</Text>
+            <Text style={style.underline}>{'Staðsetning'.toUpperCase()}</Text>
+            <Text style={style.description}>{event.locationName}</Text>
+            <Text style={style.underline}>{'Heimilisfang'.toUpperCase()}</Text>
+            <Text style={style.description}>{event.address}</Text>
+            <Text style={style.underline}>{'Aðgengi'.toUpperCase()}</Text>
+            <Text style={style.description}>{event.access}</Text>
+            <Text style={style.underline}>{'Um viðburð'.toUpperCase()}</Text>
+            <Text style={style.description}>{event.descriptionIce}</Text>
           </View>
         }
         {errorMsg && <Text>{errorMsg}</Text>}
-        {isPending && <Text>Er að sækja sjomli</Text>}
+        {isPending && <Text style={style.description}>Er að sækja viðburð...</Text>}
       </View>
     );
   }
