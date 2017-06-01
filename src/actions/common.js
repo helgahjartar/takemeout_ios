@@ -1,7 +1,7 @@
 let user_token;
 
 export const setToken = (token) => {
-  user_token = token._65;
+  user_token = token ? token._65 : token;
 }
 
 export const getToken = () => { return user_token; }
